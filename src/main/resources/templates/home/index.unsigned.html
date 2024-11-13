@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Melon</title>
+    <link rel="shortcut icon" th:href="@{'/assets/images/favicon.ico'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/assets/styles/common.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/assets/styles/index.unsigned.css'}">
+</head>
+<body>
+<main class="-spring" id="main">
+    <div class="content">
+        <img alt="Meltube" class="logo" th:src="@{'/assets/images/_logo.png'}">
+        <form novalidate class="login-form" id="loginForm">
+            <h2 class="title">로그인</h2>
+            <label class="--obj-label">
+                <span class="_text">이메일</span>
+                <input autofocus autocomplete="email" class="_field --obj-field -light" maxlength="50" minlength="8" name="email"
+                       spellcheck="false" type="email">
+            </label>
+            <label class="--obj-label">
+                <span class="_text">비밀번호</span>
+                <input autofocus autocomplete="password" class="_field --obj-field -light" maxlength="50" minlength="6"
+                       name="password" spellcheck="false" type="password">
+            </label>
+            <button class="--obj-button -color-primary">로그인</button>
+            <ul class="menu">
+                <li class="item">
+                    <span class="text">아직 계정이 없으신가요?</span>
+                    <a href="#" class="link">회원가입</a>
+                </li>
+                <li class="item">
+                    <span class="text">계정 정보를 잊으셨나요?</span>
+                    <a href="#" class="link">계정 찾기</a>
+                </li>
+            </ul>
+        </form>
+    </div>
+</main>
+</body>
+</html>

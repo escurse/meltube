@@ -1,0 +1,77 @@
+body {
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  justify-content: flex-start;
+}
+body .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+#main {
+  background-image: url("../images/index.unsigned/main-background.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 1rem;
+  margin: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+#main .content {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 5rem;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(2rem);
+  background-color: rgba(33, 33, 33, 0.6274509804);
+  position: absolute;
+}
+#main .content .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main .content .logo {
+  height: 7.5rem;
+}
+#main .content .login-form {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  background-color: #ffffff;
+  border-radius: 0.25rem;
+  color: #212121;
+  padding: 2rem;
+}
+#main .content .login-form .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main .content .login-form .title {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+#main .content .login-form .menu {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  justify-content: flex-start;
+  font-size: 0.8rem;
+  margin-top: 0.75rem;
+}
+#main .content .login-form .menu .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+/*# sourceMappingURL=index.unsigned.css.map */

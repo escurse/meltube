@@ -1,0 +1,52 @@
+@charset "UTF-8";
+
+@import "./global";
+
+body {
+  @include flex(row, stretch, flex-start);
+}
+
+#main {
+  background-image: url("../images/index.unsigned/main-background.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 1rem;
+  margin: 1rem;
+  overflow: hidden;
+  position: relative;
+
+  .content {
+    @include flex(row, center, center, 5rem);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(2rem);
+    background-color: #212121a0;
+    position: absolute;
+
+    .logo {
+      height: 7.5rem;
+    }
+
+    .login-form {
+      @include flex(column, stretch, flex-start, 0.5rem);
+      background-color: #ffffff;
+      border-radius: 0.25rem;
+      color: #212121;
+      padding: 2rem;
+
+      .title {
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .menu {
+        @include flex(column, flex-start, flex-start, 0.125rem);
+        font-size: 0.8rem;
+        margin-top: 0.75rem;
+      }
+    }
+  }
+}
