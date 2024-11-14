@@ -22,7 +22,7 @@ public class UserController {
     public String postIndex(UserEntity user) {
         JSONObject response = new JSONObject();
         Result result = this.userService.register(user);
-        response.put("result", result.nameToLower());
+        response.put(Result.NAME, result.nameToLower());
         return response.toString();
     }
 }

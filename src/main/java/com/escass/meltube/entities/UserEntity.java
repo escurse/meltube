@@ -14,10 +14,10 @@ public class UserEntity {
     private String password;
     private String nickname;
     private String contact;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
-    private LocalDateTime deleted_at;
-    private boolean is_admin;
-    private boolean is_suspended;
-    private boolean is_verified;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
+    private boolean isAdmin;
+    private boolean isSuspended;
+    private boolean isVerified;
 }
