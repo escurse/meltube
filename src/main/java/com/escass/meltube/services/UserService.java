@@ -9,10 +9,14 @@ import com.escass.meltube.results.CommonResult;
 import com.escass.meltube.results.Result;
 import com.escass.meltube.results.user.RegisterResult;
 import com.escass.meltube.utils.CryptoUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.time.LocalDateTime;
 
@@ -21,9 +25,11 @@ import java.time.LocalDateTime;
 public class UserService {
     private final EmailTokenMapper emailTokenMapper;
     private final UserMapper userMapper;
+    private final JavaMailSender mailSender; // mail 보내는 역할
+    private final SpringTemplateEngine templateEngine; // html 끌고와서 mailSender 로 보내고
 
     @Transactional // 하나라도 실패할 시 없던 일로 한다.
-    public Result register(UserEntity user) {
+    public Result register(HttpServletRequest request, UserEntity user) {
         if (user == null ||
             user.getEmail() == null || user.getEmail().length() < 8 || user.getEmail().length() > 50 ||
             user.getPassword() == null || user.getPassword().length() < 6 || user.getPassword().length() > 50 ||
@@ -64,7 +70,15 @@ public class UserService {
         if (this.emailTokenMapper.insertEmailToken(emailToken) == 0) {
             throw new TransactionalException();
         }
-        // TODO 이메일 보내기
+        String validationLink = String.format("%s://%s:%d/user/validate-email-token?email=%s&key=%s",
+                request.getScheme(),
+                request.getServerName(),
+                request.getServerPort(),
+                emailToken.getUserEmail(),
+                emailToken.getKey());
+        Context context = new Context(); // org.thymeleaf.context
+        context.setVariable("validationLink", validationLink);
+        String mailText = this.templateEngine.process("email/register", context);
         return CommonResult.SUCCESS;
     }
 }
