@@ -32,8 +32,10 @@ public class UserController {
 
     @RequestMapping(value = "/validate-email-token", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView getValidateEmailToken(EmailTokenEntity emailToken) {
+        Result result = this.userService.validateEmailToken(emailToken);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("user/validate-email-token");
+        modelAndView.addObject(Result.NAME, result.nameToLower());
+        modelAndView.setViewName("user/validateEmailToken");
         return modelAndView;
     }
 }

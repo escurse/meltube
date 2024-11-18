@@ -11,7 +11,18 @@
                 #{isSuspended}, #{isVerified})
     </insert>
     <update id="updateUser">
-
+        UPDATE `meltube`.`users`
+        SET `password`     = #{password},
+            `nickname`     = #{nickname},
+            `contact`      = #{contact},
+            `created_at`   = #{createdAt},
+            `updated_at`   = #{updatedAt},
+            `deleted_at`   = #{deletedAt},
+            `is_admin`     = #{isAdmin},
+            `is_suspended` = #{isSuspended},
+            `is_verified`  = #{isVerified}
+        WHERE `email` = #{email}
+        LIMIT 1
     </update>
     <select id="selectUserByEmail" resultType="com.escass.meltube.entities.UserEntity">
         SELECT `email`        AS `email`,
