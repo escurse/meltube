@@ -10,6 +10,9 @@
         VALUES (#{email}, #{password}, #{nickname}, #{contact}, #{createdAt}, #{updatedAt}, #{deletedAt}, #{isAdmin},
                 #{isSuspended}, #{isVerified})
     </insert>
+    <update id="updateUser">
+
+    </update>
     <select id="selectUserByEmail" resultType="com.escass.meltube.entities.UserEntity">
         SELECT `email`        AS `email`,
                `password`     AS `password`,

@@ -1,5 +1,6 @@
 package com.escass.meltube.controllers;
 
+import com.escass.meltube.entities.EmailTokenEntity;
 import com.escass.meltube.entities.UserEntity;
 import com.escass.meltube.results.Result;
 import com.escass.meltube.services.UserService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping(value ="/user")
@@ -26,5 +28,12 @@ public class UserController {
         Result result = this.userService.register(request, user);
         response.put(Result.NAME, result.nameToLower());
         return response.toString();
+    }
+
+    @RequestMapping(value = "/validate-email-token", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    public ModelAndView getValidateEmailToken(EmailTokenEntity emailToken) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("user/validate-email-token");
+        return modelAndView;
     }
 }

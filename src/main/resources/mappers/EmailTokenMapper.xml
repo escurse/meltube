@@ -8,4 +8,12 @@
         INSERT INTO `meltube`.`email_tokens` (`user_email`, `key`, `created_at`, `expires_at`, `is_used`)
         VALUES (#{userEmail}, #{key}, #{createdAt}, #{expiresAt}, #{isUsed})
     </insert>
+    <select id="selectEmailTokenByUserEmailAndKey"
+            resultType="com.escass.meltube.entities.EmailTokenEntity">
+
+    </select>
+    <update id="updateEmailToken"
+            parameterType="com.escass.meltube.entities.EmailTokenEntity">
+
+    </update>
 </mapper>
