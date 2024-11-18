@@ -64,7 +64,6 @@ public class UserService {
         if (this.emailTokenMapper.insertEmailToken(emailToken) == 0) {
             throw new TransactionalException();
         }
-        // TODO emailToken INSERT 하기
         // TODO 이메일 보내기
         return CommonResult.SUCCESS;
     }
