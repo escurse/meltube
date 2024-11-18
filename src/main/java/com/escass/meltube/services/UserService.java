@@ -1,10 +1,13 @@
 package com.escass.meltube.services;
 
+import com.escass.meltube.entities.EmailTokenEntity;
 import com.escass.meltube.entities.UserEntity;
+import com.escass.meltube.exceptions.TransactionalException;
 import com.escass.meltube.mappers.UserMapper;
 import com.escass.meltube.results.CommonResult;
 import com.escass.meltube.results.Result;
 import com.escass.meltube.results.user.RegisterResult;
+import com.escass.meltube.utils.CryptoUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,22 @@ public class UserService {
         user.setAdmin(false);
         user.setSuspended(false);
         user.setVerified(false);
+        if (this.userMapper.insertUser(user) == 0) {
+            throw new TransactionalException();
+        }
+        EmailTokenEntity emailToken = new EmailTokenEntity();
+        emailToken.setUserEmail(user.getEmail());
+        emailToken.setKey(CryptoUtils.hashSha512(String.format("%s%s%f%f",
+                user.getEmail(),
+                user.getPassword(),
+                Math.random(),
+                Math.random())));
+        emailToken.setCreatedAt(LocalDateTime.now());
+        emailToken.setExpiresAt(LocalDateTime.now().plusHours(24));
+        emailToken.setUsed(false);
+        // TODO emailToken INSERT 하기
+        // TODO @Transactional 걸고 설명하기
+        // TODO 이메일 보내기
         return this.userMapper.insertUser(user) > 0
                 ? CommonResult.SUCCESS
                 : CommonResult.FAILURE;
