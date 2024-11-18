@@ -3,6 +3,7 @@ package com.escass.meltube.services;
 import com.escass.meltube.entities.EmailTokenEntity;
 import com.escass.meltube.entities.UserEntity;
 import com.escass.meltube.exceptions.TransactionalException;
+import com.escass.meltube.mappers.EmailTokenMapper;
 import com.escass.meltube.mappers.UserMapper;
 import com.escass.meltube.results.CommonResult;
 import com.escass.meltube.results.Result;
@@ -11,14 +12,17 @@ import com.escass.meltube.utils.CryptoUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private final EmailTokenMapper emailTokenMapper;
     private final UserMapper userMapper;
 
+    @Transactional // 하나라도 실패할 시 없던 일로 한다.
     public Result register(UserEntity user) {
         if (user == null ||
             user.getEmail() == null || user.getEmail().length() < 8 || user.getEmail().length() > 50 ||
@@ -57,11 +61,11 @@ public class UserService {
         emailToken.setCreatedAt(LocalDateTime.now());
         emailToken.setExpiresAt(LocalDateTime.now().plusHours(24));
         emailToken.setUsed(false);
+        if (this.emailTokenMapper.insertEmailToken(emailToken) == 0) {
+            throw new TransactionalException();
+        }
         // TODO emailToken INSERT 하기
-        // TODO @Transactional 걸고 설명하기
         // TODO 이메일 보내기
-        return this.userMapper.insertUser(user) > 0
-                ? CommonResult.SUCCESS
-                : CommonResult.FAILURE;
+        return CommonResult.SUCCESS;
     }
 }
