@@ -9,9 +9,13 @@ import com.escass.meltube.results.CommonResult;
 import com.escass.meltube.results.Result;
 import com.escass.meltube.results.user.RegisterResult;
 import com.escass.meltube.utils.CryptoUtils;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +33,7 @@ public class UserService {
     private final SpringTemplateEngine templateEngine; // html 끌고와서 mailSender 로 보내고
 
     @Transactional // 하나라도 실패할 시 없던 일로 한다.
-    public Result register(HttpServletRequest request, UserEntity user) {
+    public Result register(HttpServletRequest request, UserEntity user) throws MessagingException {
         if (user == null ||
             user.getEmail() == null || user.getEmail().length() < 8 || user.getEmail().length() > 50 ||
             user.getPassword() == null || user.getPassword().length() < 6 || user.getPassword().length() > 50 ||
@@ -79,6 +83,13 @@ public class UserService {
         Context context = new Context(); // org.thymeleaf.context
         context.setVariable("validationLink", validationLink);
         String mailText = this.templateEngine.process("email/register", context);
+        MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        mimeMessageHelper.setFrom("pjhav1967@gmail.com");
+        mimeMessageHelper.setTo(emailToken.getUserEmail());
+        mimeMessageHelper.setSubject("[멜튜브] 회원가입 인증 링크");
+        mimeMessageHelper.setText(mailText, true);
+        this.mailSender.send(mimeMessage);
         return CommonResult.SUCCESS;
     }
 }

@@ -3,6 +3,7 @@ package com.escass.meltube.controllers;
 import com.escass.meltube.entities.UserEntity;
 import com.escass.meltube.results.Result;
 import com.escass.meltube.services.UserService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
@@ -20,7 +21,7 @@ public class UserController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String postIndex(HttpServletRequest request, UserEntity user) {
+    public String postIndex(HttpServletRequest request, UserEntity user) throws MessagingException {
         JSONObject response = new JSONObject();
         Result result = this.userService.register(request, user);
         response.put(Result.NAME, result.nameToLower());
