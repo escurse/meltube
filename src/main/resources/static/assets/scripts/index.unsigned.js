@@ -15,7 +15,13 @@ const $registerForm = document.getElementById('registerForm');
         $cover.show();
         $registerForm.reset(); // 필드 초기화
         $registerForm.show();
+        $registerForm['email'].focus();
     };
+}
+
+$registerForm['cancel'].onclick = () => {
+    $cover.hide();
+    $registerForm.hide();
 }
 
 $registerForm.onsubmit = (e) => {
