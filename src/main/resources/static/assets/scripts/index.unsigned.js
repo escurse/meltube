@@ -7,6 +7,12 @@ const $registerForm = document.getElementById('registerForm');
     const $loginForm = $content.querySelector(':scope > .login-form');
     const $menu = $loginForm.querySelector(':scope > .menu');
 
+    if (typeof localStorage.getItem('rememberedEmail') === 'string') {
+        $loginForm['email'].value = localStorage.getItem('rememberedEmail');
+        $loginForm['rememberEmail'].checked = true;
+        $loginForm['password'].focus();
+    }
+
     $loginForm.onsubmit = (e) => {
         e.preventDefault();
         const $emailLabel = $loginForm.findLabel('email');
@@ -39,6 +45,11 @@ const $registerForm = document.getElementById('registerForm');
             }
             const response = JSON.parse(xhr.responseText);
             if (response['result'] === 'success') {
+                if ($loginForm['rememberEmail'].checked) {
+                    localStorage.setItem('rememberedEmail', $loginForm['email'].value);
+                } else {
+                    localStorage.removeItem('rememberedEmail');
+                }
                 location.reload();
                 return;
             }
@@ -49,7 +60,7 @@ const $registerForm = document.getElementById('registerForm');
                     $loginForm['email'].select();
                 }],
                 failure_not_verified: ['로그인', `해당 계정의 이메일 인증이 완료되지 않았습니다. 이메일을 확인해 주세요.<br><br>혹시 이메일이 오지 않았다면 인증 링크가 포함된 이메일을 <a href="/user/resend-email-token?email=${$loginForm['email'].value}" target="_blank">다시 전송</a>할 수 있습니다.`, ($dialog) => Dialog.hide($dialog)],
-                failure_suspended: ['로그인', '해당 계정은 이용이 정지된 상태입니다. 관리자에게 문의해 주세요.', ($dialog) => Dialog.hide($dialog)],
+                failure_suspended: ['로그인', '해당 계정은 이용이 정지된 상태입니다. 관리자에게 문의해 주세요.', ($dialog) => Dialog.hide($dialog)]
             }[response['result']] || ['오류', '서버가 알 수 없는 응답을 반환하였습니다. 잠시 후 다시 시도해 주세요.', ($dialog) => Dialog.hide($dialog)];
             Dialog.show({
                 title: title,
