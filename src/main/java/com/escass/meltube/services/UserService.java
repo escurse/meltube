@@ -7,6 +7,7 @@ import com.escass.meltube.mappers.EmailTokenMapper;
 import com.escass.meltube.mappers.UserMapper;
 import com.escass.meltube.results.CommonResult;
 import com.escass.meltube.results.Result;
+import com.escass.meltube.results.user.LoginResult;
 import com.escass.meltube.results.user.RegisterResult;
 import com.escass.meltube.results.user.ValidateEmailTokenResult;
 import com.escass.meltube.utils.CryptoUtils;
@@ -46,6 +47,20 @@ public class UserService {
         if (!encoder.matches(user.getPassword(), dbUser.getPassword())) {
             return CommonResult.FAILURE;
         }
+        if (!dbUser.isVerified()) {
+            return LoginResult.FAILURE_NOT_VERIFIED;
+        }
+        if (dbUser.isSuspended()) {
+            return LoginResult.FAILURE_SUSPENDED;
+        }
+        user.setPassword(dbUser.getPassword());
+        user.setNickname(dbUser.getNickname());
+        user.setContact(dbUser.getContact());
+        user.setCreatedAt(dbUser.getCreatedAt());
+        user.setDeletedAt(dbUser.getDeletedAt());
+        user.setAdmin(dbUser.isAdmin());
+        user.setSuspended(dbUser.isSuspended());
+        user.setVerified(dbUser.isVerified());
         return CommonResult.SUCCESS;
     }
 
