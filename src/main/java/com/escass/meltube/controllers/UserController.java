@@ -2,10 +2,12 @@ package com.escass.meltube.controllers;
 
 import com.escass.meltube.entities.EmailTokenEntity;
 import com.escass.meltube.entities.UserEntity;
+import com.escass.meltube.results.CommonResult;
 import com.escass.meltube.results.Result;
 import com.escass.meltube.services.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
@@ -24,9 +26,14 @@ public class UserController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String getIndex(UserEntity user) {
-
-        return null;
+    public String getIndex(HttpSession session, UserEntity user) {
+        Result result = this.userService.login(user);
+        if (result == CommonResult.SUCCESS) {
+            session.setAttribute("user", user);
+        }
+        JSONObject response = new JSONObject();
+        response.put(Result.NAME, result.nameToLower());
+        return response.toString();
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)

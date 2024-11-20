@@ -38,9 +38,13 @@ const $registerForm = document.getElementById('registerForm');
                 return;
             }
             const response = JSON.parse(xhr.responseText);
+            if (response['result'] === 'success') {
+                location.reload();
+                return;
+            }
             const [title, content, onclick] = {
                 failure: ['로그인', '이메일 혹은 비밀번호가 올바르지 않습니다. 다시 확인해 주세요.', ($dialog) => {
-                    Dialog.show($dialog);
+                    Dialog.hide($dialog);
                     $loginForm['email'].focus();
                     $loginForm['email'].select();
                 }],
