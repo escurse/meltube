@@ -19,15 +19,22 @@
         <img alt="Meltube" class="logo" th:src="@{'/assets/images/_logo.png'}">
         <form novalidate class="login-form" id="loginForm">
             <h2 class="title">로그인</h2>
-            <label class="--obj-label">
+            <label class="--obj-label" data-id="email">
                 <span class="_text">이메일</span>
                 <input autofocus autocomplete="email" class="_field --obj-field -light" maxlength="50" minlength="8" name="email"
                        spellcheck="false" type="email">
+                <span class="_warning">올바른 이메일을 입력해 주세요.</span>
             </label>
-            <label class="--obj-label">
+            <label class="--obj-label" data-id="password">
                 <span class="_text">비밀번호</span>
                 <input autofocus autocomplete="password" class="_field --obj-field -light" maxlength="50" minlength="6"
                        name="password" spellcheck="false" type="password">
+                <span class="_warning">올바른 비밀번호를 입력해 주세요.</span>
+            </label>
+            <label class="--obj-check-label -light">
+                <input type="checkbox" name="rememberEmail" class="_input">
+                <span class="_box"></span>
+                <span class="_text">이메일을 기억합니다.</span>
             </label>
             <button class="--obj-button -color-primary">로그인</button>
             <ul class="menu">
