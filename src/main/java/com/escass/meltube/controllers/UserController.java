@@ -15,11 +15,12 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value ="/user")
+@RequestMapping(value = "/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -54,6 +55,35 @@ public class UserController {
         if (result == CommonResult.SUCCESS) {
             response.put("email", user.getEmail());
         }
+        return response.toString();
+    }
+
+    @RequestMapping(value = "/recover-password", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    public ModelAndView getRecoverPassword(@RequestParam(value = "userEmail", required = false) String userEmail,
+                                           @RequestParam(value = "key", required = false) String key) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("userEmail", userEmail);
+        modelAndView.addObject("key", key);
+        modelAndView.setViewName("user/recoverPassword");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/recover-password", method = RequestMethod.PATCH, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String patchRecoverPassword(EmailTokenEntity emailToken,
+                                       @RequestParam(value = "password", required = false) String password) {
+        Result result = this.userService.resolveRecoverPassword(emailToken, password);
+        JSONObject response = new JSONObject();
+        response.put(Result.NAME, result.nameToLower());
+        return response.toString();
+    }
+
+    @RequestMapping(value = "/recover-password", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String postRecoverPassword(HttpServletRequest request, @RequestParam(value = "email", required = false) String email) throws MessagingException {
+        Result result = this.userService.provokeRecoverPassword(request, email);
+        JSONObject response = new JSONObject();
+        response.put(Result.NAME, result.nameToLower());
         return response.toString();
     }
 

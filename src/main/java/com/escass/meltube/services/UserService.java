@@ -9,6 +9,7 @@ import com.escass.meltube.results.CommonResult;
 import com.escass.meltube.results.Result;
 import com.escass.meltube.results.user.LoginResult;
 import com.escass.meltube.results.user.RegisterResult;
+import com.escass.meltube.results.user.ResolveRecoverPasswordResult;
 import com.escass.meltube.results.user.ValidateEmailTokenResult;
 import com.escass.meltube.utils.CryptoUtils;
 import jakarta.mail.MessagingException;
@@ -64,9 +65,50 @@ public class UserService {
         return CommonResult.SUCCESS;
     }
 
+    @Transactional
+    public Result provokeRecoverPassword(HttpServletRequest request, String email) throws MessagingException {
+        if (email == null || email.length() < 8 || email.length() > 50) {
+            return CommonResult.FAILURE;
+        }
+        UserEntity user = this.userMapper.selectUserByEmail(email);
+        if (user == null || user.getDeletedAt() != null) {
+            return CommonResult.FAILURE;
+        }
+        EmailTokenEntity emailToken = new EmailTokenEntity();
+        emailToken.setUserEmail(user.getEmail());
+        emailToken.setKey(CryptoUtils.hashSha512(String.format("%s%s%f%f",
+                user.getEmail(),
+                user.getPassword(),
+                Math.random(),
+                Math.random())));
+        emailToken.setCreatedAt(LocalDateTime.now());
+        emailToken.setExpiresAt(LocalDateTime.now().plusHours(24));
+        emailToken.setUsed(false);
+        if (this.emailTokenMapper.insertEmailToken(emailToken) == 0) {
+            throw new TransactionalException();
+        }
+        String validationLink = String.format("%s://%s:%d/user/recover-password?userEmail=%s&key=%s",
+                request.getScheme(),
+                request.getServerName(),
+                request.getServerPort(),
+                emailToken.getUserEmail(),
+                emailToken.getKey());
+        Context context = new Context(); // org.thymeleaf.context
+        context.setVariable("validationLink", validationLink);
+        String mailText = this.templateEngine.process("email/recoverPassword", context);
+        MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        mimeMessageHelper.setFrom("pjhav1967@gmail.com");
+        mimeMessageHelper.setTo(emailToken.getUserEmail());
+        mimeMessageHelper.setSubject("[멜튜브] 비밀번호 재설정 인증 링크");
+        mimeMessageHelper.setText(mailText, true);
+        this.mailSender.send(mimeMessage);
+        return CommonResult.SUCCESS;
+    }
+
     public Result recoverEmail(UserEntity user) {
         if (user == null ||
-            user.getContact() == null || user.getContact().length() < 10 || user.getContact().length() > 12) {
+                user.getContact() == null || user.getContact().length() < 10 || user.getContact().length() > 12) {
             return CommonResult.FAILURE;
         }
         UserEntity dbUser = this.userMapper.selectUserByContact(user.getContact());
@@ -138,6 +180,35 @@ public class UserService {
         return CommonResult.SUCCESS;
     }
 
+    @Transactional
+    public Result resolveRecoverPassword(EmailTokenEntity emailToken, String password) {
+        if (emailToken == null ||
+            emailToken.getUserEmail() == null || emailToken.getUserEmail().length() < 8 || emailToken.getUserEmail().length() > 50 ||
+            emailToken.getKey() == null || emailToken.getKey().length() != 128 ||
+            password == null || password.length() < 6 || password.length() > 50) {
+            return CommonResult.FAILURE;
+        }
+        EmailTokenEntity dbEmailToken = this.emailTokenMapper.selectEmailTokenByUserEmailAndKey(emailToken.getUserEmail(), emailToken.getKey());
+        if (dbEmailToken == null || dbEmailToken.isUsed()) {
+            return CommonResult.FAILURE;
+        }
+        if (dbEmailToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            return ResolveRecoverPasswordResult.FAILURE_EXPIRED;
+        }
+        dbEmailToken.setUsed(true);
+        if (this.emailTokenMapper.updateEmailToken(dbEmailToken) == 0) {
+            throw new TransactionalException();
+        }
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        UserEntity user = this.userMapper.selectUserByEmail(emailToken.getUserEmail());
+        user.setPassword(encoder.encode(password));
+        if (this.userMapper.updateUser(user) == 0) {
+            throw new TransactionalException();
+        }
+        return CommonResult.SUCCESS;
+    }
+
+    @Transactional
     public Result validateEmailToken(EmailTokenEntity emailToken) {
         if (emailToken == null ||
                 emailToken.getUserEmail() == null || emailToken.getUserEmail().length() < 8 || emailToken.getUserEmail().length() > 50 ||
