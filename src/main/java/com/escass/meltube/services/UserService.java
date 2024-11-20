@@ -35,8 +35,8 @@ public class UserService {
 
     public Result login(UserEntity user) {
         if (user == null ||
-            user.getEmail() == null || user.getEmail().length() < 8 || user.getEmail().length() > 50 ||
-            user.getPassword() == null || user.getPassword().length() < 6 || user.getPassword().length() > 50) {
+                user.getEmail() == null || user.getEmail().length() < 8 || user.getEmail().length() > 50 ||
+                user.getPassword() == null || user.getPassword().length() < 6 || user.getPassword().length() > 50) {
             return CommonResult.FAILURE;
         }
         UserEntity dbUser = this.userMapper.selectUserByEmail(user.getEmail());
@@ -61,6 +61,19 @@ public class UserService {
         user.setAdmin(dbUser.isAdmin());
         user.setSuspended(dbUser.isSuspended());
         user.setVerified(dbUser.isVerified());
+        return CommonResult.SUCCESS;
+    }
+
+    public Result recoverEmail(UserEntity user) {
+        if (user == null ||
+            user.getContact() == null || user.getContact().length() < 10 || user.getContact().length() > 12) {
+            return CommonResult.FAILURE;
+        }
+        UserEntity dbUser = this.userMapper.selectUserByContact(user.getContact());
+        if (dbUser == null || dbUser.getDeletedAt() != null) {
+            return CommonResult.FAILURE;
+        }
+        user.setEmail(dbUser.getEmail());
         return CommonResult.SUCCESS;
     }
 

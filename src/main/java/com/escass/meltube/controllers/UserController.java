@@ -45,6 +45,18 @@ public class UserController {
         return response.toString();
     }
 
+    @RequestMapping(value = "/recover-email", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String getRecoverEmail(UserEntity user) {
+        Result result = this.userService.recoverEmail(user);
+        JSONObject response = new JSONObject();
+        response.put(Result.NAME, result.nameToLower());
+        if (result == CommonResult.SUCCESS) {
+            response.put("email", user.getEmail());
+        }
+        return response.toString();
+    }
+
     @RequestMapping(value = "/validate-email-token", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView getValidateEmailToken(EmailTokenEntity emailToken) {
         Result result = this.userService.validateEmailToken(emailToken);

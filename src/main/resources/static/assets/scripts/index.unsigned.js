@@ -1,6 +1,7 @@
 const $cover = document.getElementById('cover');
 const $main = document.getElementById('main');
 const $registerForm = document.getElementById('registerForm');
+const $recoverForm = document.getElementById('recoverForm');
 
 {
     const $content = $main.querySelector(':scope > .content');
@@ -105,7 +106,7 @@ $registerForm.onsubmit = (e) => {
         $passwordLabel.setValid($registerForm['password'].value === $registerForm['passwordCheck'].value, '비밀번호가 서로 일치하지 않습니다.');
     }
     $nicknameLabel.setValid($registerForm['nickname'].value.length >= 2 && $registerForm['nickname'].value.length <= 10);
-    $contactLabel.setValid($registerForm['contact'].value.length >= 10 && $registerForm['contact'].value.length <= 12);
+    $contactLabel.setValid($registerForm['contact'].value.length > 10 && $registerForm['contact'].value.length < 12);
     if (!$emailLabel.isValid() || !$passwordLabel.isValid() || !$nicknameLabel.isValid() || !$contactLabel.isValid()) {
         return;
     }
@@ -117,7 +118,7 @@ $registerForm.onsubmit = (e) => {
                 text: '확인', onclick: ($dialog) => Dialog.hide($dialog)
             }]
         })
-    return;
+        return;
     }
     const xhr = new XMLHttpRequest();
     const formData = new FormData();
@@ -143,11 +144,15 @@ $registerForm.onsubmit = (e) => {
         }
         const response = JSON.parse(xhr.responseText);
         const [title, content, onclick] = {
-            failure: ["회원가입",'알 수 없는 이유로 회원가입에 실패하였습니다.','잠시 후 다시 시도해 주세요.', ($dialog) => Dialog.hide($dialog)],
+            failure: ["회원가입", '알 수 없는 이유로 회원가입에 실패하였습니다.', '잠시 후 다시 시도해 주세요.', ($dialog) => Dialog.hide($dialog)],
             failure_duplicate_email: ["회원가입", `입력하신 이메일(${$registerForm['email'].value})은 이미 사용 중입니다. 다른 이메일을 사용해 주세요.`, ($dialog) => Dialog.hide($dialog)],
             failure_duplicate_contact: ["회원가입", `입력하신 연락처(${$registerForm['password'].value})은 이미 사용 중입니다. 다른 연락처를 사용해 주세요.`, ($dialog) => Dialog.hide($dialog)],
             failure_duplicate_nickname: ["회원가입", `입력하신 닉네임(${$registerForm['nickname'].value})은 이미 사용 중입니다. 다른 닉네임을 사용해 주세요.`, ($dialog) => Dialog.hide($dialog)],
-            success: ["회원가입", "회원가입해 주셔서 감사합니다. 입력하신 이메일로 계정을 인증할 수 있는 링크를 전송하였습니다. 계정 인증 후 로그인할 수 있으며, 해당 링크는 24시간 동안만 유효하니 유의해 주세요.", ($dialog) => {Dialog.hide($dialog); $registerForm.hide(); $cover.hide();}]
+            success: ["회원가입", "회원가입해 주셔서 감사합니다. 입력하신 이메일로 계정을 인증할 수 있는 링크를 전송하였습니다. 계정 인증 후 로그인할 수 있으며, 해당 링크는 24시간 동안만 유효하니 유의해 주세요.", ($dialog) => {
+                Dialog.hide($dialog);
+                $registerForm.hide();
+                $cover.hide();
+            }]
         }[response['result']] || ['오류', '서버가 알 수 없는 응답을 반환하였습니다. 잠시 후 다시 시도해 주세요.', ($dialog) => Dialog.hide($dialog)];
         Dialog.show({
             title: title,
@@ -160,6 +165,76 @@ $registerForm.onsubmit = (e) => {
     xhr.open('POST', './user/');
     xhr.send(formData);
     Loading.show(0);
+}
+
+$recoverForm['cancel'].onclick = () => {
+    $cover.hide();
+    $recoverForm.hide();
+}
+
+$recoverForm.onsubmit = (e) => {
+    e.preventDefault();
+    if ($recoverForm['mode'].value === '') {
+        Dialog.show({
+            title: '계정 찾기',
+            content: '"이메일 찾기" 혹은 "비밀번호 재설정" 중 하나를 선택해 주세요.',
+            buttons: [{
+                text: '확인', onclick: ($dialog) => Dialog.hide($dialog)
+            }]
+        });
+        return;
+    }
+    if ($recoverForm['mode'].value === 'email') {
+        const $contactLabel = $recoverForm.findLabel('contact');
+        $contactLabel.setValid($recoverForm['contact'].value.length > 10 && $recoverForm['contact'].value.length < 12);
+        if (!$contactLabel.isValid()) {
+            return;
+        }
+    }
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState !== XMLHttpRequest.DONE) {
+            return;
+        }
+        Loading.hide();
+        if (xhr.status < 200 || xhr.status >= 300) {
+            Dialog.show({
+                title: '오류',
+                content: '요청을 전송하는 도중 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.',
+                buttons: [{
+                    text: '확인',
+                    onclick: ($dialog) => Dialog.hide($dialog)
+                }]
+            });
+            return;
+        }
+        const response = JSON.parse(xhr.responseText);
+        const [title, content, onclick] = {
+            failure: ['이메일 찾기', '입력하신 연락처와 일치하는 계정 정보를 찾을 수 없습니다.', ($dialog) => Dialog.hide($dialog)],
+            success: ['이메일 찾기', `입력하신 연락처로 찾은 계정의 이메일은 <b>${response['email']}</b>입니다.<br><br>확인을 클릭하면 로그인 화면으로 돌아갑니다.`, ($dialog) => {
+                Dialog.hide($dialog);
+                $cover.hide();
+                $recoverForm.hide();
+            }]
+        }[response['result']] || ['오류', '서버가 알 수 없는 응답을 반환하였습니다. 잠시 후 다시 시도해 주세요.', ($dialog) => Dialog.hide($dialog)];
+        Dialog.show({
+            title: title,
+            content: content,
+            buttons: [{
+                text: '확인', onclick: onclick
+            }]
+        });
+    };
+    xhr.open('GET', `/user/recover-email?contact=${$recoverForm['contact'].value}`);
+    xhr.send();
+    Loading.show(0);
+    // if ($recoverForm['mode'].value === 'password') {
+    //     const $emailLabel = $recoverForm.findLabel('email');
+    //     $emailLabel.setValid($recoverForm['email'].value.length >= 8 && $recoverForm['email'].value.length <= 50);
+    //     if (!$emailLabel.isValid()) {
+    //         return;
+    //     }
+    // }
 }
 
 window.onload = () => {
