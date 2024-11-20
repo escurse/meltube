@@ -32,6 +32,23 @@ public class UserService {
     private final JavaMailSender mailSender; // mail 보내는 역할
     private final SpringTemplateEngine templateEngine; // html 끌고와서 mailSender 로 보내고
 
+    public Result login(UserEntity user) {
+        if (user == null ||
+            user.getEmail() == null || user.getEmail().length() < 8 || user.getEmail().length() > 50 ||
+            user.getPassword() == null || user.getPassword().length() < 6 || user.getPassword().length() > 50) {
+            return CommonResult.FAILURE;
+        }
+        UserEntity dbUser = this.userMapper.selectUserByEmail(user.getEmail());
+        if (dbUser == null || dbUser.getDeletedAt() != null) {
+            return CommonResult.FAILURE;
+        }
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if (!encoder.matches(user.getPassword(), dbUser.getPassword())) {
+            return CommonResult.FAILURE;
+        }
+        return CommonResult.SUCCESS;
+    }
+
     @Transactional // 하나라도 실패할 시 없던 일로 한다.
     public Result register(HttpServletRequest request, UserEntity user) throws MessagingException {
         if (user == null ||
@@ -95,8 +112,8 @@ public class UserService {
 
     public Result validateEmailToken(EmailTokenEntity emailToken) {
         if (emailToken == null ||
-            emailToken.getUserEmail() == null || emailToken.getUserEmail().length() < 8 || emailToken.getUserEmail().length() > 50 ||
-            emailToken.getKey() == null || emailToken.getKey().length() != 128) {
+                emailToken.getUserEmail() == null || emailToken.getUserEmail().length() < 8 || emailToken.getUserEmail().length() > 50 ||
+                emailToken.getKey() == null || emailToken.getKey().length() != 128) {
             return CommonResult.FAILURE;
         }
         EmailTokenEntity dbEmailToken = this.emailTokenMapper.selectEmailTokenByUserEmailAndKey(emailToken.getUserEmail(), emailToken.getKey());

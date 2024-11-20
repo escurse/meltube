@@ -13,7 +13,7 @@ const $registerForm = document.getElementById('registerForm');
         const $passwordLabel = $loginForm.findLabel('password');
         $emailLabel.setValid($loginForm['email'].value.length >= 8 && $loginForm['email'].value.length <= 50);
         $passwordLabel.setValid($loginForm['password'].value.length >= 6 && $loginForm['password'].value.length <= 50);
-        if (!$emailLabel.isValid() || $passwordLabel.isValid()) {
+        if (!$emailLabel.isValid() || !$passwordLabel.isValid()) {
             return;
         }
         const xhr = new XMLHttpRequest();
@@ -57,7 +57,7 @@ const $registerForm = document.getElementById('registerForm');
         };
         xhr.open('GET', url.toString());
         xhr.send();
-        Loading.show();
+        Loading.show(0);
     }
 
     $menu.querySelector(':scope > .item > [rel="register"]').onclick = (e) => {
