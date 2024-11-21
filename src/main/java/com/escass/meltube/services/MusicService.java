@@ -45,7 +45,7 @@ public class MusicService {
         music.setLyrics($lyric.text());
         music.setCoverFileName($cover.attr("src"));
 
-        String searchQuery = URLEncoder.encode(String.format("%s %s site:youtube.com", music.getArtist(), music.getName()), StandardCharsets.UTF_8);
+        String searchQuery = URLEncoder.encode(String.format("%s %s site:www.youtube.com", music.getArtist(), music.getName()), StandardCharsets.UTF_8);
         Document googleSearchResult = Jsoup.connect(String.format("https://www.google.com/search?q=%s", searchQuery)).get();
         Element $firstH3 = googleSearchResult.selectFirst("h3");
         Element $anchor = $firstH3.parent();
