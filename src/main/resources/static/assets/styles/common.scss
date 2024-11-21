@@ -233,6 +233,21 @@ ol, ul {
   transition-property: border-color;
   transition-timing-function: ease;
 
+  &.-dark {
+    $border_color: #424242;
+    background-color: #222324;
+    border: 0.0625rem solid $border_color;
+    color: #ffffff;
+
+    &:hover {
+      border-color: lighten($border_color, 10%);
+    }
+
+    &:focus {
+      border-color: #01d345;
+    }
+  }
+
   &.-light {
     $border_color: #eeeeee;
     background-color: #ffffff;

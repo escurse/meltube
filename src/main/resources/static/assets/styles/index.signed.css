@@ -65,6 +65,38 @@ body .-spring {
   flex-grow: 1;
   position: relative;
 }
+#main .header {
+  height: 2rem;
+  margin-bottom: 1.5rem;
+}
+#main .content {
+  top: 3.5rem;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 3.5rem);
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transform: scale(95%);
+  transform-origin: top left;
+  transition-duration: 250ms;
+  transition-property: opacity, transform;
+  transition-timing-function: ease;
+}
+#main .content.-visible {
+  opacity: 1;
+  pointer-events: all;
+  transform: scale(100%);
+}
+#main .content .subtitle {
+  color: #9e9e9e;
+  font-size: 1.125rem;
+}
+#main .content .title {
+  color: #ffffff;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
 
 #player {
   align-items: stretch;

@@ -233,6 +233,17 @@ ol, ul {
   transition-property: border-color;
   transition-timing-function: ease;
 }
+.--obj-field.-dark {
+  background-color: #222324;
+  border: 0.0625rem solid #424242;
+  color: #ffffff;
+}
+.--obj-field.-dark:hover {
+  border-color: rgb(91.5, 91.5, 91.5);
+}
+.--obj-field.-dark:focus {
+  border-color: #01d345;
+}
 .--obj-field.-light {
   background-color: #ffffff;
   border: 0.0625rem solid #eeeeee;

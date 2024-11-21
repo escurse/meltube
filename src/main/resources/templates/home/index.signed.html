@@ -17,8 +17,8 @@
     <img th:src="@{/assets/images/index.signed/_logo-img.png}" alt="" class="logo">
     <ul class="menu">
         <li class="title">마이뮤직</li>
-        <li class="item -selected">음원 등록 신청</li>
-        <li class="item">음원 등록 신청 내역</li>
+        <li class="item" rel="mymusic.register">음원 등록 신청</li>
+        <li class="item" rel="mymusic.register_history">음원 등록 신청 내역</li>
     </ul>
 </nav>
 <main id="main">
@@ -26,7 +26,39 @@
 
     </header>
     <div class="content" rel="mymusic.register">
-        <h2 class="title"></h2>
+        <h3 class="subtitle">마이뮤직</h3>
+        <h2 class="title">음원 등록 신청</h2>
+        <form novalidate class="default-form">
+            <span class="text">음원을 등록하기 위해 아래 양식을 완성해 주세요. 음원은 관리자의 승인 후 등록되며 관리자의 승인까지는 수 일이 소요될 수 있습니다. 또한, 이미 등록되어 있는 음원이거나 사회 미풍양속을 저해한다고 판단되는 등 등록하기에 적절하지 않은 경우 등록이 거절될 수 있습니다.</span>
+            <label class="--obj-label -dark">
+                <span class="_text">아티스트</span>
+                <input required autocomplete="off" type="text" class="_field --obj-field -dark" maxlength="50" minlength="1" name="artist">
+            </label>
+            <label class="--obj-label -dark">
+                <span class="_text">앨범 이름</span>
+                <input required autocomplete="off" type="text" class="_field --obj-field -dark" maxlength="50" minlength="1" name="album">
+            </label>
+            <label class="--obj-label -dark">
+                <span class="_text">발매일</span>
+                <input required autocomplete="off" type="date" class="_field --obj-field -dark" maxlength="50" minlength="1" name="releaseDate">
+            </label>
+            <label class="--obj-label -dark">
+                <span class="_text">장르</span>
+                <input required autocomplete="off" type="text" class="_field --obj-field -dark" maxlength="50" minlength="1" name="genre">
+            </label>
+            <label class="--obj-label -dark">
+                <span class="_text">곡 이름</span>
+                <input required autocomplete="off" type="text" class="_field --obj-field -dark" maxlength="50" minlength="1" name="name">
+            </label>
+            <label class="--obj-label -dark">
+                <span class="_text">가사</span>
+                <textarea maxlength="10000" minlength="0" name="lyrics" class="_field --obj-field -dark"></textarea>
+            </label>
+        </form>
+    </div>
+    <div class="content" rel="mymusic.register_history">
+        <h3 class="subtitle">마이뮤직</h3>
+        <h2 class="title">음원 등록 신청 내역</h2>
     </div>
 </main>
 <section id="player">
@@ -66,7 +98,8 @@
                     <img th:src="@{/assets/images/index.signed/player.controler.play.png}" alt="재생" class="icon">
                 </button>
                 <button class="button" name="pause" type="button">
-                    <img th:src="@{/assets/images/index.signed/player.controler.pause.png}" alt="일시정지" class="icon" style="display: none;">
+                    <img th:src="@{/assets/images/index.signed/player.controler.pause.png}" alt="일시정지" class="icon"
+                         style="display: none">
                 </button>
                 <button class="button" name="next" type="button">
                     <img th:src="@{/assets/images/index.signed/player.controler.next.png}" alt="다음 곡" class="icon">
