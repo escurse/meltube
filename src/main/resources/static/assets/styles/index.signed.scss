@@ -26,13 +26,23 @@ body {
   user-select: none;
 
   .album-wrapper {
-    @include flex(column, center, center, 0.5rem);
+    @include flex(column, center, center, 0.125rem);
     padding: 1.5rem;
+
+    &.liked {
+      .like {
+        display: none;
+      }
+
+      .unlike {
+        display: block;
+      }
+    }
 
     .image {
       width: 60%;
-      border-radius: 0.5rem;
-      margin-bottom: 0.75rem;
+      border-radius: 0.25rem;
+      margin-bottom: 1rem;
       -webkit-user-drag: none;
     }
 
@@ -44,6 +54,46 @@ body {
 
     .artist {
       color: #9e9e9e;
+    }
+
+    .like {
+      cursor: pointer;
+      margin-top: 0.25rem;
+
+      &:hover > .icon {
+        filter: brightness(100%);
+      }
+
+      .icon {
+        width: 1.375rem;
+
+        filter: brightness(75%);
+        transition-duration: 125ms;
+        transition-property: filter;
+        transition-timing-function: ease;
+      }
+    }
+
+    .unlike {
+      cursor: pointer;
+      display: none;
+      margin-top: 0.5rem;
+
+      &:hover {
+        filter: brightness(90%);
+      }
+
+      &:active {
+        filter: brightness(80%);
+      }
+
+      .icon {
+        width: 1.375rem;
+        filter: brightness(100%);
+        transition-duration: 125ms;
+        transition-property: filter;
+        transition-timing-function: ease;
+      }
     }
   }
 }

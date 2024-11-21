@@ -21,15 +21,27 @@
 </main>
 <section id="player">
     <div class="album-wrapper">
-        <img src="https://cdnimg.melon.co.kr/cm2/album/images/114/54/681/11454681_20240328174504_500.jpg?85ea94bf93484fc633fb08df6e157b5e/melon/resize/282/quality/80/optimize" alt="" class="image">
-        <span class="title">고민중독</span>
-        <span class="artist">QWER</span>
+        <img src="https://cdnimg.melon.co.kr/cm2/album/images/113/99/122/11399122_20240115193158_500.jpg?497dce96193633449133e33e5a314740/melon/resize/282/quality/80/optimize" alt="" class="image">
+        <span class="title">만찬가</span>
+        <span class="artist">츠키(tuki)</span>
         <button class="like" name="like" type="button">
             <img th:src="@{/assets/images/index.signed/player.album.like-false.png}" alt="좋아요" class="icon">
         </button>
+        <button class="unlike" name="unlike" type="button">
+            <img th:src="@{/assets/images/index.signed/player.album.like-true.png}" alt="좋아요 취소" class="icon">
+        </button>
     </div>
     <div class="control-wrapper">
+        <div class="bar">
+            <div class="value"></div>
+        </div>
+        <div class="time">
+            <span class="current">00:17</span>
+            <span class="total">03:23</span>
+        </div>
+        <div class="button-container">
 
+        </div>
     </div>
     <ul class="list">
 

@@ -41,7 +41,7 @@ body .-spring {
   align-items: center;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.125rem;
   justify-content: center;
   padding: 1.5rem;
 }
@@ -49,10 +49,16 @@ body .-spring {
   flex-grow: 1;
   flex-shrink: 1;
 }
+#player .album-wrapper.liked .like {
+  display: none;
+}
+#player .album-wrapper.liked .unlike {
+  display: block;
+}
 #player .album-wrapper .image {
   width: 60%;
-  border-radius: 0.5rem;
-  margin-bottom: 0.75rem;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
   -webkit-user-drag: none;
 }
 #player .album-wrapper .title {
@@ -62,6 +68,38 @@ body .-spring {
 }
 #player .album-wrapper .artist {
   color: #9e9e9e;
+}
+#player .album-wrapper .like {
+  cursor: pointer;
+  margin-top: 0.25rem;
+}
+#player .album-wrapper .like:hover > .icon {
+  filter: brightness(100%);
+}
+#player .album-wrapper .like .icon {
+  width: 1.375rem;
+  filter: brightness(75%);
+  transition-duration: 125ms;
+  transition-property: filter;
+  transition-timing-function: ease;
+}
+#player .album-wrapper .unlike {
+  cursor: pointer;
+  display: none;
+  margin-top: 0.5rem;
+}
+#player .album-wrapper .unlike:hover {
+  filter: brightness(90%);
+}
+#player .album-wrapper .unlike:active {
+  filter: brightness(80%);
+}
+#player .album-wrapper .unlike .icon {
+  width: 1.375rem;
+  filter: brightness(100%);
+  transition-duration: 125ms;
+  transition-property: filter;
+  transition-timing-function: ease;
 }
 
 /*# sourceMappingURL=index.signed.css.map */
