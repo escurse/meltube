@@ -14,14 +14,25 @@
 </head>
 <body>
 <nav id="nav">
-
+    <img th:src="@{/assets/images/index.signed/_logo-img.png}" alt="" class="logo">
+    <ul class="menu">
+        <li class="title">마이뮤직</li>
+        <li class="item -selected">음원 등록 신청</li>
+        <li class="item">음원 등록 신청 내역</li>
+    </ul>
 </nav>
 <main id="main">
+    <header class="header">
 
+    </header>
+    <div class="content" rel="mymusic.register">
+        <h2 class="title"></h2>
+    </div>
 </main>
 <section id="player">
     <div class="album-wrapper">
-        <img src="https://cdnimg.melon.co.kr/cm2/album/images/113/99/122/11399122_20240115193158_500.jpg?497dce96193633449133e33e5a314740/melon/resize/282/quality/80/optimize" alt="" class="image">
+        <img src="https://cdnimg.melon.co.kr/cm2/album/images/113/99/122/11399122_20240115193158_500.jpg?497dce96193633449133e33e5a314740/melon/resize/282/quality/80/optimize"
+             alt="" class="image">
         <span class="title">만찬가</span>
         <span class="artist">츠키(tuki)</span>
         <button class="like" name="like" type="button">
@@ -40,11 +51,74 @@
             <span class="total">03:23</span>
         </div>
         <div class="button-container">
-
+            <button class="button toggleable -toggled" name="repeat" type="button">
+                <img th:src="@{/assets/images/index.signed/player.controler.repeat.png}" alt="반복 재생" class="icon">
+            </button>
+            <button class="button toggleable" name="shuffle" type="button">
+                <img th:src="@{/assets/images/index.signed/player.controler.shuffle.png}" alt="무작위 재생" class="icon">
+            </button>
+            <div class="space"></div>
+            <div class="ppn">
+                <button class="button" name="prev" type="button">
+                    <img th:src="@{/assets/images/index.signed/player.controler.prev.png}" alt="처음/이전" class="icon">
+                </button>
+                <button class="button" name="play" type="button">
+                    <img th:src="@{/assets/images/index.signed/player.controler.play.png}" alt="재생" class="icon">
+                </button>
+                <button class="button" name="pause" type="button">
+                    <img th:src="@{/assets/images/index.signed/player.controler.pause.png}" alt="일시정지" class="icon" style="display: none;">
+                </button>
+                <button class="button" name="next" type="button">
+                    <img th:src="@{/assets/images/index.signed/player.controler.next.png}" alt="다음 곡" class="icon">
+                </button>
+            </div>
+            <div class="space"></div>
+            <button class="button toggleable" name="mute" type="button">
+                <img th:src="@{/assets/images/index.signed/player.controler.mute.png}" alt="음소거" class="icon">
+            </button>
         </div>
     </div>
     <ul class="list">
-
+        <li class="item -playing">
+            <label class="check-wrapper">
+                <input type="checkbox" class="input">
+                <span class="box"></span>
+            </label>
+            <span class="title">만찬가</span>
+            <span class="artist">츠키(tuki)</span>
+        </li>
+        <li class="item">
+            <label class="check-wrapper">
+                <input type="checkbox" class="input">
+                <span class="box"></span>
+            </label>
+            <span class="title">고민중독</span>
+            <span class="artist">QWER</span>
+        </li>
+        <li class="item">
+            <label class="check-wrapper">
+                <input type="checkbox" class="input">
+                <span class="box"></span>
+            </label>
+            <span class="title">내이름맑음</span>
+            <span class="artist">QWER</span>
+        </li>
+        <li class="item">
+            <label class="check-wrapper">
+                <input type="checkbox" class="input">
+                <span class="box"></span>
+            </label>
+            <span class="title">에피소드</span>
+            <span class="artist">이무진</span>
+        </li>
+        <li class="item">
+            <label class="check-wrapper">
+                <input type="checkbox" class="input">
+                <span class="box"></span>
+            </label>
+            <span class="title">청혼하지 않을 이유를 못 찾았어</span>
+            <span class="artist">이무진</span>
+        </li>
     </ul>
 </section>
 </body>

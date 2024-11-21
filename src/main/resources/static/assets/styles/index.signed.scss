@@ -11,6 +11,50 @@ body {
 #nav {
   width: 10rem;
   background-color: #222324;
+  user-select: none;
+
+  .logo {
+    height: 2rem;
+    margin-bottom: 1.5rem;
+    -webkit-user-drag: none;
+  }
+
+  .menu {
+    @include flex(column, flex-start, flex-start, 0.5rem);
+
+    &:has(.item.-selected) > .title {
+      color: #ffffff;
+    }
+
+    .title {
+      font-size: 1.125rem;
+      font-weight: 500;
+    }
+
+    .item {
+      $item_color: #9e9e9e;
+      color: $item_color;
+      cursor: pointer;
+      font-weight: 400;
+      margin-left: 1rem;
+      transition-duration: 125ms;
+      transition-property: color;
+      transition-timing-function: ease;
+
+      &:hover {
+        color: lighten($item_color, 10%);
+      }
+
+      &:active {
+        color: lighten($item_color, 20%);
+      }
+
+      &.-selected {
+        color: #01d345;
+        font-weight: 500;
+      }
+    }
+  }
 }
 
 #main {
@@ -27,7 +71,7 @@ body {
 
   .album-wrapper {
     @include flex(column, center, center, 0.125rem);
-    padding: 1.5rem;
+    padding: 1.5rem 1rem 0 1rem;
 
     &.liked {
       .like {
@@ -40,7 +84,7 @@ body {
     }
 
     .image {
-      width: 60%;
+      width: 55%;
       border-radius: 0.25rem;
       margin-bottom: 1rem;
       -webkit-user-drag: none;
@@ -96,5 +140,132 @@ body {
       }
     }
   }
-}
 
+  .control-wrapper {
+    @include flex(column, stretch, flex-start, 0.25rem);
+    padding: 0 1rem;
+
+    .bar {
+      height: 0.175rem;
+      background-color: #101010;
+      position: relative;
+
+      .value {
+        top: 0;
+        left: 0;
+        width: 23%;
+        height: 100%;
+        background-color: #01d345;
+        position: absolute;
+      }
+    }
+
+    .time {
+      @include flex(row, center, space-between, 1rem);
+      font-size: 0.75rem;
+      margin-top: 0.125rem;
+
+      .current {
+        color: #ffffff;
+        font-weight: 500;
+      }
+    }
+
+    .button-container {
+      $icon_size: 1.25rem;
+      @include flex(row, center, space-between, 0.25rem);
+
+      .space {
+        width: $icon_size;
+      }
+
+      > .button {
+        cursor: pointer;
+
+        &.-toggled > .icon {
+          filter: brightness(100%);
+        }
+
+        .icon {
+          width: $icon_size;
+          filter: brightness(50%);
+        }
+      }
+
+      .ppn {
+        @include flex(row, center, center, 0.5rem);
+
+        .button {
+          cursor: pointer;
+
+          &[name="play"] > .icon,
+          &[name="pause"] > .icon {
+            width: 1.875rem;
+          }
+
+          .icon {
+            width: 1.75rem;
+          }
+        }
+      }
+    }
+  }
+
+  .list {
+    @include flex(column, stretch, flex-start);
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: hidden auto;
+
+    .item {
+      @include flex(row, center, flex-start, 0.425rem);
+      line-height: 1;
+      padding: 0.425rem 1rem;
+
+      &.-playing {
+        color: #01d345;
+        font-weight: 500;
+      }
+
+      .check-wrapper {
+        cursor: pointer;
+
+        .box {
+          @include minmaxSize(0.75rem);
+          top: 0.0625rem;
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: 75%;
+          border: 0.125rem solid #58595a;
+          border-radius: 0.25rem;
+          display: inline-block;
+          position: relative;
+        }
+
+        .input {
+          display: none;
+
+          &:checked + .box {
+            background-color: #58595a;
+            background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAACXBIWXMAAAsTAAALEwEAmpwYAAABBUlEQVR4nO3UzyoFURwH8GElyr+6PImFYkM2kpUH8ABeQdnJRmHHjh0PYWNlKSlSSimylgX3fjS5aYxj3MOZsrjf5Zzf/D7nd5o5WdbNfwiWsY1GncgkXr3nAQt1IP249DnP6E0Nbfmaw9TIFJol5BHjKZEBXAemWUqG5MFuADnIUgZzaJWQO4ymRIZwG5hmPqbJCNbz/6KiZj+A7MUgwzhtv/iE2UDNYgC5wWAMdFxqkGMzhfUG7ks1rWJNp9BJYLcfGI4C6ztRSLvRGM6/wTYDz6/y6ycaKhzPmZ/TxPSvkEhs409Ih9gF+pJAFdgLJpIhFR/IWnKkdOWsYgU9tUHdZIG8AXfnYXxwGVtiAAAAAElFTkSuQmCC");
+          }
+        }
+      }
+
+      .title {
+        max-width: 60%;
+        flex-grow: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .artist {
+        max-width: 4rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+}
