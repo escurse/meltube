@@ -3,7 +3,7 @@
 @import "./global";
 
 body {
-  @include flex(row, stretch, flex-start, 0.75rem);
+  @include flex(row, stretch, flex-start);
   box-sizing: border-box;
   padding: 1rem;
 }
@@ -60,7 +60,11 @@ body {
 #main {
   background-color: #222324;
   flex-grow: 1;
+  overflow: hidden auto;
   position: relative;
+
+  scrollbar-color: #424242 #222324; /* 스크롤바 색상: 잡는거색 전체색 */
+  scrollbar-width: thin; /* 스크롤바 굵기: auto/thin/none 밖에 없음, px, rem 못 줌. */
 
   .header {
     height: 2rem;
@@ -72,11 +76,12 @@ body {
     left: 0;
     width: 100%;
     height: calc(100% - 3.5rem);
+    box-sizing: border-box;
     opacity: 0;
+    padding: 0 1rem;
     pointer-events: none;
     position: absolute;
     transform: scale(95%);
-    transform-origin: top left;
     transition-duration: 250ms;
     transition-property: opacity, transform;
     transition-timing-function: ease;
@@ -96,6 +101,102 @@ body {
       color: #ffffff;
       font-size: 1.25rem;
       margin-bottom: 0.75rem;
+    }
+
+    .default-form {
+      @include flex(column, stretch, flex-start, 0.5rem);
+      max-width: 40rem;
+
+      .text {
+        text-align: justify;
+      }
+    }
+  }
+}
+
+#main > .content[rel="mymusic.register"] {
+  > form {
+    > .cover {
+      > .row {
+        @include flex(row, flex-start, flex-start, 0.5rem);
+
+        > .preview-wrapper {
+          @include minmaxSize(11.25rem);
+          width: 30rem;
+          aspect-ratio: 1/1;
+          border: 0.0625rem solid #757575;
+          border-radius: 0.25rem;
+          overflow: hidden;
+          position: relative;
+
+          > * {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            position: absolute;
+          }
+
+          > .text {
+            @include flex(row, center, center);
+            color: #a0a0a0;
+            padding: 1rem;
+            text-align: center;
+          }
+
+          > .image {
+            object-fit: cover;
+            object-position: center;
+          }
+        }
+
+        > .input-wrapper {
+          @include flex(column, flex-start, flex-start, 0.25rem);
+
+          > .tip > code {
+            background-color: #424242;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            padding: 0.125rem 0.25rem
+          }
+        }
+      }
+    }
+    > .youtube {
+      > .row {
+        @include flex(row, stretch, flex-start, 1rem);
+
+        > .input-wrapper {
+          @include minmaxWidth(11.25rem);
+          @include flex(column, stretch, flex-start, 0.5rem);
+        }
+
+        > .iframe-wrapper {
+          aspect-ratio: 16/9;
+          border: 0.0625rem solid #424242;
+          flex-grow: 1;
+          position: relative;
+
+          > * {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+          }
+
+          > .text {
+            @include flex(row, center, center);
+            color: #a0a0a0;
+            text-align: center;
+          }
+
+          > .iframe {
+            border: none;
+          }
+        }
+      }
     }
   }
 }

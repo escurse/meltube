@@ -25,11 +25,40 @@
     <header class="header">
 
     </header>
-    <div class="content" rel="mymusic.register">
+    <div class="content -visible" rel="mymusic.register">
         <h3 class="subtitle">마이뮤직</h3>
         <h2 class="title">음원 등록 신청</h2>
         <form novalidate class="default-form">
             <span class="text">음원을 등록하기 위해 아래 양식을 완성해 주세요.<br> 음원은 관리자의 승인 후 등록되며 관리자의 승인까지는 수 일이 소요될 수 있습니다.<br> 또한, 이미 등록되어 있는 음원이거나 사회 미풍양속을 저해한다고 판단되는 등 등록하기에 적절하지 않은 경우 등록이 거절될 수 있습니다.</span>
+            <label class="--obj-label cover">
+                <span class="_text">커버 이미지</span>
+                <span class="row">
+                    <span class="preview-wrapper">
+                        <span class="text">커버 이미지를 선택해 주세요.</span>
+                        <img src="" alt="" class="image" style="display: none">
+                    </span>
+                    <span class="input-wrapper">
+                        <input hidden required accept="image/*" name="_cover" type="file">
+                        <span class="tip">* 커버 이미지의 확장자는 <code>gif</code>, <code>jpg</code>, <code>jpeg</code>, <code>png</code>, <code>webp</code> 등이어야 합니다.</span>
+                        <span class="tip">* 커버 이미지의 가로 및 세로 크기는 같아야 합니다.</span>
+                        <span class="tip">* 커버 이미지의 파일 크기는 10MB를 초과하지 않아야 합니다.</span>
+                        <span class="--obj-button -color-primary">커버 이미지 찾기</span>
+                    </span>
+                </span>
+            </label>
+            <label class="--obj-label youtube">
+                <span class="_text">유튜브 식별자</span>
+                <span class="row">
+                    <span class="input-wrapper">
+                        <input required autocomplete="off" class="_field --obj-field -dark" maxlength="11" minlength="11" name="youtubeId" type="text">
+                        <button class="--obj-button -color-light-gray" name="youtubeIdCheckButton" type="button">유튜브 식별자 확인</button>
+                    </span>
+                    <span class="iframe-wrapper">
+                        <span class="text">유튜브 식별자를 입력해 주세요.</span>
+                        <iframe class="iframe" style="display: none;"></iframe>
+                    </span>
+                </span>
+            </label>
             <label class="--obj-label -dark">
                 <span class="_text">아티스트</span>
                 <input required autocomplete="off" type="text" class="_field --obj-field -dark" maxlength="50" minlength="1" name="artist">

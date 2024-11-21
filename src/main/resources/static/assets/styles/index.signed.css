@@ -1,8 +1,9 @@
+@charset "UTF-8";
 body {
   align-items: stretch;
   display: flex;
   flex-direction: row;
-  gap: 0.75rem;
+  gap: 0;
   justify-content: flex-start;
   box-sizing: border-box;
   padding: 1rem;
@@ -63,7 +64,10 @@ body .-spring {
 #main {
   background-color: #222324;
   flex-grow: 1;
+  overflow: hidden auto;
   position: relative;
+  scrollbar-color: #424242 #222324; /* 스크롤바 색상: 잡는거색 전체색 */
+  scrollbar-width: thin; /* 스크롤바 굵기: auto/thin/none 밖에 없음, px, rem 못 줌. */
 }
 #main .header {
   height: 2rem;
@@ -74,11 +78,12 @@ body .-spring {
   left: 0;
   width: 100%;
   height: calc(100% - 3.5rem);
+  box-sizing: border-box;
   opacity: 0;
+  padding: 0 1rem;
   pointer-events: none;
   position: absolute;
   transform: scale(95%);
-  transform-origin: top left;
   transition-duration: 250ms;
   transition-property: opacity, transform;
   transition-timing-function: ease;
@@ -96,6 +101,144 @@ body .-spring {
   color: #ffffff;
   font-size: 1.25rem;
   margin-bottom: 0.75rem;
+}
+#main .content .default-form {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  max-width: 40rem;
+}
+#main .content .default-form .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main .content .default-form .text {
+  text-align: justify;
+}
+
+#main > .content[rel="mymusic.register"] > form > .cover > .row {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+#main > .content[rel="mymusic.register"] > form > .cover > .row .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main > .content[rel="mymusic.register"] > form > .cover > .row > .preview-wrapper {
+  width: 11.25rem;
+  min-width: 11.25rem;
+  max-width: 11.25rem;
+  height: 11.25rem;
+  min-height: 11.25rem;
+  max-height: 11.25rem;
+  width: 30rem;
+  aspect-ratio: 1/1;
+  border: 0.0625rem solid #757575;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  position: relative;
+}
+#main > .content[rel="mymusic.register"] > form > .cover > .row > .preview-wrapper > * {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position: absolute;
+}
+#main > .content[rel="mymusic.register"] > form > .cover > .row > .preview-wrapper > .text {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  justify-content: center;
+  color: #a0a0a0;
+  padding: 1rem;
+  text-align: center;
+}
+#main > .content[rel="mymusic.register"] > form > .cover > .row > .preview-wrapper > .text .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main > .content[rel="mymusic.register"] > form > .cover > .row > .preview-wrapper > .image {
+  object-fit: cover;
+  object-position: center;
+}
+#main > .content[rel="mymusic.register"] > form > .cover > .row > .input-wrapper {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  justify-content: flex-start;
+}
+#main > .content[rel="mymusic.register"] > form > .cover > .row > .input-wrapper .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main > .content[rel="mymusic.register"] > form > .cover > .row > .input-wrapper > .tip > code {
+  background-color: #424242;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  padding: 0.125rem 0.25rem;
+}
+#main > .content[rel="mymusic.register"] > form > .youtube > .row {
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: flex-start;
+}
+#main > .content[rel="mymusic.register"] > form > .youtube > .row .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main > .content[rel="mymusic.register"] > form > .youtube > .row > .input-wrapper {
+  width: 11.25rem;
+  min-width: 11.25rem;
+  max-width: 11.25rem;
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+#main > .content[rel="mymusic.register"] > form > .youtube > .row > .input-wrapper .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main > .content[rel="mymusic.register"] > form > .youtube > .row > .iframe-wrapper {
+  aspect-ratio: 16/9;
+  border: 0.0625rem solid #424242;
+  flex-grow: 1;
+  position: relative;
+}
+#main > .content[rel="mymusic.register"] > form > .youtube > .row > .iframe-wrapper > * {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+#main > .content[rel="mymusic.register"] > form > .youtube > .row > .iframe-wrapper > .text {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  justify-content: center;
+  color: #a0a0a0;
+  text-align: center;
+}
+#main > .content[rel="mymusic.register"] > form > .youtube > .row > .iframe-wrapper > .text .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main > .content[rel="mymusic.register"] > form > .youtube > .row > .iframe-wrapper > .iframe {
+  border: none;
 }
 
 #player {
