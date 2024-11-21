@@ -21,7 +21,8 @@ import java.time.format.DateTimeFormatter;
 public class MusicService {
 
     public MusicEntity crawlMelon(String id) throws IOException {
-        if (id == null || id.length() != 8) {
+        if (id == null) {
+            System.out.println("hi");
             return null;
         }
         String url = String.format("https://www.melon.com/song/detail.htm?songId=%s", id);
