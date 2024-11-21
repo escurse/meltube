@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script defer src="https://www.youtube.com/iframe_api" type="text/javascript"></script>
+</head>
+<body>
+<div id="embed"></div>
+<script>
+    const player = new YT.Player('embed', {
+        height: '360',
+        width: '640',
+        videoId: 'M71c1UVf-VE',
+        playerVars: {
+            autoplay: 1,
+            loop: 1,
+            controls: 0,
+            showinfo: 0,
+            autohide: 1,
+            modestbranding: 1,
+            vq: 'hd1080'
+        },
+        events: {
+            'onReady': onPlayerReady,
+            'onstateChange': onPlayerStateChange
+        }
+    });
+
+    function onPlayerReady(event) {
+        // event.target.playVideo();
+        player.playVideo();
+        player.mute();
+        console.log(player);
+        setTimeout(() => {
+            player.unMute();
+        }, 1000);
+    }
+
+    function onPlayerStateChange(event) {
+
+    }
+
+    // function stopVideo() {
+    //     player.stopVideo();
+    // }
+</script>
+</body>
+</html>
