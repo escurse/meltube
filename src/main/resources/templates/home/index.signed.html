@@ -1,13 +1,39 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Meltube</title>
+    <link rel="shortcut icon" th:href="@{'/assets/images/favicon.ico'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/assets/styles/common.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/assets/styles/index.signed.css'}">
+    <script type="text/javascript" th:src="@{'/assets/scripts/common.js'}"></script>
+    <script defer type="text/javascript" th:src="@{'/assets/scripts/index.signed.js'}"></script>
 </head>
 <body>
-로그인 되었을 때 보여줄 페이지!
+<nav id="nav">
+
+</nav>
+<main id="main">
+
+</main>
+<section id="player">
+    <div class="album-wrapper">
+        <img src="https://cdnimg.melon.co.kr/cm2/album/images/114/54/681/11454681_20240328174504_500.jpg?85ea94bf93484fc633fb08df6e157b5e/melon/resize/282/quality/80/optimize" alt="" class="image">
+        <span class="title">고민중독</span>
+        <span class="artist">QWER</span>
+        <button class="like" name="like" type="button">
+            <img th:src="@{/assets/images/index.signed/player.album.like-false.png}" alt="좋아요" class="icon">
+        </button>
+    </div>
+    <div class="control-wrapper">
+
+    </div>
+    <ul class="list">
+
+    </ul>
+</section>
 </body>
 </html>
