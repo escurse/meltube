@@ -47,6 +47,7 @@ public class MusicController {
                             MusicEntity music) throws IOException, InterruptedException {
         JSONObject response = new JSONObject();
         Result result = this.musicService.addMusic(user, music, _cover);
-        return null;
+        response.put(Result.NAME, result.nameToLower());
+        return response.toString();
     }
 }

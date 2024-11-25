@@ -5,11 +5,32 @@
 <mapper namespace="com.escass.meltube.mappers.MusicMapper">
     <insert id="insertMusic"
             parameterType="com.escass.meltube.entities.MusicEntity">
-        INSERT INTO `meltube`.`` ()
-        VALUES (#{artist}, #{album}, #{releaseDate}, #{genre}, #{name}, #{lyrics}, #{coverData}, #{coverContentType}, #{coverFileName}, #{youtubeId})
+        INSERT INTO `meltube`.`musics` (`user_email`, `artist`, `album`, `release_date`, `genre`, `name`, `lyrics`,
+                                        `cover_date`, `cover_content_type`, `cover_file_name`, `youtube_id`, `status`,
+                                        `created_at`, `updated_at`, `is_deleted`)
+        VALUES (#{userEmail}, #{artist}, #{album}, #{releaseDate}, #{genre}, #{name}, #{lyrics}, #{coverData},
+                #{coverContentType}, #{coverFileName}, #{youtubeId}, #{status}, #{createdAt}, #{updatedAt}, #{isDeleted})
     </insert>
     <select id="selectMusicByYoutubeId"
             resultType="com.escass.meltube.entities.MusicEntity">
-
+        SELECT `index`              AS `index`,
+               `user_email`         AS `userEmail`,
+               `artist`             AS `artist`,
+               `album`              AS `album`,
+               `release_date`       AS `releaseDate`,
+               `genre`              AS `genre`,
+               `name`               AS `name`,
+               `lyrics`             AS `lyrics`,
+               `cover_date`         AS `coverData`,
+               `cover_content_type` AS `coverContentType`,
+               `cover_file_name`    AS `coverFileName`,
+               `youtube_id`         AS `youtubeId`,
+               `status`             AS `status`,
+               `created_at`         AS `createdAt`,
+               `updated_at`         AS `updatedAt`,
+               `is_deleted`         AS `isDeleted`
+        FROM `meltube`.`musics`
+        WHERE `youtube_id` = #{youtubeId}
+        LIMIT 1
     </select>
 </mapper>

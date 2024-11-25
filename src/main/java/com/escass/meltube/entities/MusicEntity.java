@@ -11,6 +11,12 @@ import java.time.LocalDateTime;
 @Setter
 @EqualsAndHashCode(of = {"index"})
 public class MusicEntity {
+    public enum Status {
+        ALLOWED,
+        DENIED,
+        PENDING
+    }
+
     private int index;
     private String userEmail;
     private String artist;

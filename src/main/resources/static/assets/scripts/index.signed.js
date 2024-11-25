@@ -299,6 +299,7 @@ $navItems.forEach(($navItem) => {
                 return;
             }
             const response = JSON.parse(xhr.responseText);
+            console.log(response);
             const [title, content, onclick] = {
                 failure: ['음원 등록 신청', '알 수 없는 이유로 음원 등록에 실패하였습니다. 잠시 후 다시 시도해 주세요.', ($dialog) => Dialog.hide($dialog)],
                 failure_duplicate_youtube_id: ['음원 등록 신청', `입력하신 유튜브 식별자 <b>${$form['youtubeId'].value}</b>는 이미 등록되어 있습니다.<br><br>다시 한 번 확인해 주세요.`, ($dialog) => Dialog.hide($dialog)],

@@ -70,6 +70,7 @@ public class MusicService {
             music.setCoverFileName(cover.getOriginalFilename());
         }
         music.setUserEmail(user.getEmail());
+        music.setStatus(MusicEntity.Status.PENDING.name());
         music.setCreatedAt(LocalDateTime.now());
         music.setUpdatedAt(null);
         music.setDeleted(false);
