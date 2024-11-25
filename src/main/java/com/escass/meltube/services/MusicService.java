@@ -28,13 +28,16 @@ public class MusicService {
         String url = String.format("https://www.melon.com/song/detail.htm?songId=%s", id);
         Document doc = Jsoup.connect(url).get();
         Elements $name = doc.select(".song_name");
+        if ($name.isEmpty()) {
+            return null;
+        }
         $name.select(".none").remove();
         Elements $artist = doc.select(".artist_name > span:first-child");
         Elements $list = doc.select("dl.list");
         Elements $album = $list.select("dd:nth-child(2)");
         Elements $release = $list.select("dd:nth-child(4)");
         Elements $genre = $list.select("dd:nth-child(6)");
-        Elements $lyric = doc.select(".lyric");
+        Elements $lyrics = doc.select(".lyric");
         Elements $cover = doc.select("img[src^=\"https://cdnimg.melon.co.kr/cm2/album/images/\"]");
 
         MusicEntity music = new MusicEntity();
@@ -43,19 +46,26 @@ public class MusicService {
         music.setReleaseDate(LocalDate.parse($release.text().replace(".", "-"), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         music.setGenre($genre.text());
         music.setName($name.text());
-        music.setLyrics($lyric.text());
+        music.setLyrics($lyrics.text());
         music.setCoverFileName($cover.attr("src"));
 
         String searchQuery = URLEncoder.encode(String.format("%s %s site:www.youtube.com", music.getArtist(), music.getName()), StandardCharsets.UTF_8);
         Document googleSearchResult = Jsoup.connect(String.format("https://www.google.com/search?q=%s", searchQuery)).get();
+        String youtubeId = null;
         Element $firstH3 = googleSearchResult.selectFirst("h3");
-        Element $anchor = $firstH3.parent();
-        String href = $anchor.attr("href");
-        String youtubeId = href.split("=")[1];
+        if ($firstH3 != null) {
+            Element $anchor = $firstH3.parent();
+            if ($anchor != null) {
+                String href = $anchor.attr("href");
+                String[] hrefArray = href.split("=");
+                if (hrefArray.length > 1) {
+                    youtubeId = href.split("=")[1];
+                }
+            }
+        }
         music.setYoutubeId(youtubeId);
         return music;
     }
-
     public boolean verifyYoutubeId(String id) throws IOException, InterruptedException {
         if (id == null || id.length() != 11) {
             return false;
