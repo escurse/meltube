@@ -1,6 +1,9 @@
 package com.escass.meltube.services;
 
 import com.escass.meltube.entities.MusicEntity;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -49,23 +52,74 @@ public class MusicService {
         music.setLyrics($lyrics.text());
         music.setCoverFileName($cover.attr("src"));
 
-        String searchQuery = URLEncoder.encode(String.format("%s %s site:www.youtube.com", music.getArtist(), music.getName()), StandardCharsets.UTF_8);
-        Document googleSearchResult = Jsoup.connect(String.format("https://www.google.com/search?q=%s", searchQuery)).get();
         String youtubeId = null;
-        Element $firstH3 = googleSearchResult.selectFirst("h3");
-        if ($firstH3 != null) {
-            Element $anchor = $firstH3.parent();
-            if ($anchor != null) {
-                String href = $anchor.attr("href");
+        try {
+//            String searchQuery = URLEncoder.encode(String.format("%s %s site:www.youtube.com", music.getArtist(), music.getName()), StandardCharsets.UTF_8);
+//            Document googleSearchResult = Jsoup.connect(String.format("https://www.google.com/search?q=%s", searchQuery)).get();
+//            Element $firstH3 = googleSearchResult.selectFirst("h3");
+//            if ($firstH3 != null) {
+//                Element $anchor = $firstH3.parent();
+//                if ($anchor != null) {
+//                    String href = $anchor.attr("href");
+//                    String[] hrefArray = href.split("=");
+//                    if (hrefArray.length > 1) {
+//                        youtubeId = href.split("=")[1];
+//                    }
+//                }
+//            }
+
+            String searchQuery = URLEncoder.encode(String.format("%s %s", music.getArtist(), music.getName()), StandardCharsets.UTF_8);
+            Document naverSearchResult = Jsoup.connect(String.format("https://search.naver.com/search.naver?where=video&sort=rel&view=big&query=%s&selected_cp=3130781782", searchQuery)).get();
+            Element $firstAnchor = naverSearchResult.selectFirst("a.info_title");
+            if ($firstAnchor != null) {
+                String href = $firstAnchor.attr("href");
                 String[] hrefArray = href.split("=");
                 if (hrefArray.length > 1) {
-                    youtubeId = href.split("=")[1];
+                    youtubeId = hrefArray[1];
                 }
             }
+        } catch (HttpStatusException ignored) {
+//            youtubeId = null;
         }
         music.setYoutubeId(youtubeId);
         return music;
     }
+
+    public MusicEntity[] searchMelon(String keyword) throws IOException, InterruptedException {
+        if (keyword == null || keyword.isEmpty()) {
+            return null;
+        }
+        keyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
+        String url = String.format("https://www.melon.com/search/keyword/index.json?query=%s", keyword);
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            return null;
+        }
+        String responseText = response.body();
+        JSONObject responseObject = new JSONObject(responseText);
+        if (!responseObject.has("SONGCONTENTS")) {
+            return new MusicEntity[0];
+        }
+        JSONArray songArray = responseObject.getJSONArray("SONGCONTENTS");
+        MusicEntity[] musicArray = new MusicEntity[songArray.length()];
+        for (int i = 0; i < songArray.length(); i++) {
+            JSONObject song = songArray.getJSONObject(i);
+            MusicEntity music = new MusicEntity();
+            music.setArtist(song.getString("ARTISTNAME"));
+            music.setAlbum(song.getString("ALBUMNAME"));
+            music.setName(song.getString("SONGNAME"));
+            music.setCoverFileName(song.getString("ALBUMIMG"));
+            music.setYoutubeId(song.getString("SONGID"));
+            musicArray[i] = music;
+        }
+        return musicArray;
+    }
+
     public boolean verifyYoutubeId(String id) throws IOException, InterruptedException {
         if (id == null || id.length() != 11) {
             return false;
