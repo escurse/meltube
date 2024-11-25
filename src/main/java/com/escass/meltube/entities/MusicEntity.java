@@ -23,6 +23,7 @@ public class MusicEntity {
     private String coverContentType;
     private String coverFileName;
     private String youtubeId;
+    private String status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean isDeleted;

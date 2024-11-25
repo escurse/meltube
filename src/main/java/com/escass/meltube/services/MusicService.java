@@ -1,6 +1,12 @@
 package com.escass.meltube.services;
 
 import com.escass.meltube.entities.MusicEntity;
+import com.escass.meltube.entities.UserEntity;
+import com.escass.meltube.mappers.MusicMapper;
+import com.escass.meltube.results.CommonResult;
+import com.escass.meltube.results.Result;
+import com.escass.meltube.results.music.AddMusicResult;
+import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.HttpStatusException;
@@ -9,6 +15,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,14 +25,61 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
+@RequiredArgsConstructor
 public class MusicService {
+    private final MusicMapper musicMapper;
+
+    public Result addMusic(UserEntity user, MusicEntity music, MultipartFile cover) throws IOException, InterruptedException {
+        if (user == null || user.isSuspended() || user.getDeletedAt() != null) {
+            return CommonResult.FAILURE_UNSIGNED;
+        }
+        if (music == null ||
+            music.getArtist() == null || music.getArtist().isEmpty() || music.getArtist().length() > 50 ||
+            music.getAlbum() == null || music.getAlbum().isEmpty() || music.getAlbum().length() > 50 ||
+            music.getReleaseDate() == null ||
+            music.getGenre() == null || music.getGenre().isEmpty() || music.getGenre().length() > 50 ||
+            music.getName() == null || music.getName().isEmpty() || music.getName().length() > 50 ||
+            music.getLyrics() == null ||
+            music.getYoutubeId() == null || music.getYoutubeId().length() != 11 ||
+            (music.getCoverFileName() == null && cover == null)) {
+            return CommonResult.FAILURE;
+        }
+        if (this.musicMapper.selectMusicByYoutubeId(music.getYoutubeId()) != null) {
+            return AddMusicResult.FAILURE_DUPLICATE_YOUTUBE_ID;
+        }
+        if (cover == null) {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(music.getCoverFileName()))
+                    .GET()
+                    .build();
+            HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            if (response.statusCode() != 200) {
+                return CommonResult.FAILURE;
+            }
+            music.setCoverData(response.body());
+            music.setCoverContentType("image/jpeg");
+            music.setCoverFileName("_cover.jpg");
+        } else {
+            music.setCoverData(cover.getBytes());
+            music.setCoverContentType(cover.getContentType());
+            music.setCoverFileName(cover.getOriginalFilename());
+        }
+        music.setUserEmail(user.getEmail());
+        music.setCreatedAt(LocalDateTime.now());
+        music.setUpdatedAt(null);
+        music.setDeleted(false);
+        return this.musicMapper.insertMusic(music) > 0
+                ? CommonResult.SUCCESS
+                : CommonResult.FAILURE;
+    }
 
     public MusicEntity crawlMelon(String id) throws IOException {
-        if (id == null) {
-            System.out.println("hi");
+        if (id == null || id.isEmpty()) {
             return null;
         }
         String url = String.format("https://www.melon.com/song/detail.htm?songId=%s", id);
@@ -43,10 +97,14 @@ public class MusicService {
         Elements $lyrics = doc.select(".lyric");
         Elements $cover = doc.select("img[src^=\"https://cdnimg.melon.co.kr/cm2/album/images/\"]");
 
+        String releaseDate = $release.text().replace(".", "-");
+        if (releaseDate.split("-").length == 2) {
+            releaseDate += "-01";
+        }
         MusicEntity music = new MusicEntity();
         music.setArtist($artist.text());
         music.setAlbum($album.text());
-        music.setReleaseDate(LocalDate.parse($release.text().replace(".", "-"), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        music.setReleaseDate(LocalDate.parse(releaseDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         music.setGenre($genre.text());
         music.setName($name.text());
         music.setLyrics($lyrics.text());

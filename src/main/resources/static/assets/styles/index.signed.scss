@@ -5,11 +5,11 @@
 body {
   @include flex(row, stretch, flex-start);
   box-sizing: border-box;
-  padding: 1rem;
 }
 
 #nav {
   width: 10rem;
+  padding: 1rem;
   background-color: #222324;
   user-select: none;
 
@@ -75,10 +75,11 @@ body {
     top: 3.5rem;
     left: 0;
     width: 100%;
-    height: calc(100% - 3.5rem);
+    max-height: 0;
     box-sizing: border-box;
     opacity: 0;
-    padding: 0 1rem;
+    overflow: hidden;
+    padding: 1rem;
     pointer-events: none;
     position: absolute;
     transform: scale(95%);
@@ -87,6 +88,8 @@ body {
     transition-timing-function: ease;
 
     &.-visible {
+      max-height: initial;
+      overflow: initial;
       opacity: 1;
       pointer-events: all;
       transform: scale(100%);
@@ -109,6 +112,10 @@ body {
 
       .text {
         text-align: justify;
+      }
+
+      > .button-container {
+        @include flex(row, stretch, flex-end, 0.5rem);
       }
     }
   }

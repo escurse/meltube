@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.escass.meltube.mappers.MusicMapper">
+    <insert id="insertMusic"
+            parameterType="com.escass.meltube.entities.MusicEntity">
+        INSERT INTO `meltube`.`` ()
+        VALUES (#{artist}, #{album}, #{releaseDate}, #{genre}, #{name}, #{lyrics}, #{coverData}, #{coverContentType}, #{coverFileName}, #{youtubeId})
+    </insert>
+    <select id="selectMusicByYoutubeId"
+            resultType="com.escass.meltube.entities.MusicEntity">
+
+    </select>
+</mapper>

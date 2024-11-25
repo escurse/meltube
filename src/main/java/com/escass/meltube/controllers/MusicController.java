@@ -1,16 +1,15 @@
 package com.escass.meltube.controllers;
 
 import com.escass.meltube.entities.MusicEntity;
+import com.escass.meltube.entities.UserEntity;
 import com.escass.meltube.results.Result;
 import com.escass.meltube.services.MusicService;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -39,5 +38,15 @@ public class MusicController {
         JSONObject response = new JSONObject();
         response.put(Result.NAME, result);
         return response.toString();
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String postIndex(@SessionAttribute(value = "user", required = false) UserEntity user,
+                            @RequestParam(value = "_cover", required = false) MultipartFile _cover,
+                            MusicEntity music) throws IOException, InterruptedException {
+        JSONObject response = new JSONObject();
+        Result result = this.musicService.addMusic(user, music, _cover);
+        return null;
     }
 }

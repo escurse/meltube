@@ -6,7 +6,6 @@ body {
   gap: 0;
   justify-content: flex-start;
   box-sizing: border-box;
-  padding: 1rem;
 }
 body .-spring {
   flex-grow: 1;
@@ -15,6 +14,7 @@ body .-spring {
 
 #nav {
   width: 10rem;
+  padding: 1rem;
   background-color: #222324;
   user-select: none;
 }
@@ -77,10 +77,11 @@ body .-spring {
   top: 3.5rem;
   left: 0;
   width: 100%;
-  height: calc(100% - 3.5rem);
+  max-height: 0;
   box-sizing: border-box;
   opacity: 0;
-  padding: 0 1rem;
+  overflow: hidden;
+  padding: 1rem;
   pointer-events: none;
   position: absolute;
   transform: scale(95%);
@@ -89,6 +90,8 @@ body .-spring {
   transition-timing-function: ease;
 }
 #main .content.-visible {
+  max-height: initial;
+  overflow: initial;
   opacity: 1;
   pointer-events: all;
   transform: scale(100%);
@@ -116,6 +119,17 @@ body .-spring {
 }
 #main .content .default-form .text {
   text-align: justify;
+}
+#main .content .default-form > .button-container {
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+#main .content .default-form > .button-container .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 #main > .content[rel="mymusic.register"] > form > .melon > .row {

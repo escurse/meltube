@@ -90,7 +90,7 @@ $navItems.forEach(($navItem) => {
     })
     $form['melonCrawlButton'].onclick = () => {
         const $melonLabel = $form.findLabel('melon');
-        $melonLabel.setValid($form['melonId'].value.length === 8);
+        $melonLabel.setValid($form['melonId'].value.length > 0);
         if (!$melonLabel.isValid()) {
             return;
         }
@@ -147,6 +147,21 @@ $navItems.forEach(($navItem) => {
         xhr.send();
         Loading.show(0);
     }
+
+    $form['_cover'].onchange = () => {
+        const $text = $form.querySelector(':scope > .cover > .row > .preview-wrapper > .text');
+        const $image = $form.querySelector(':scope > .cover > .row > .preview-wrapper > .image');
+        if (($form['_cover'].files?.length ?? 0) === 0) {
+            $text.style.display = 'flex';
+            $image.style.display = 'none';
+            $image.src = '';
+            return;
+        }
+        $text.style.display = 'none';
+        $image.style.display = 'block';
+        $image.src = URL.createObjectURL($form['_cover'].files[0]);
+    };
+
     $form['youtubeIdCheckButton'].onclick = () => {
         const youtubeId = $form['youtubeId'].value;
         if (youtubeId.length !== 11) {
@@ -209,5 +224,101 @@ $navItems.forEach(($navItem) => {
         Loading.show(0);
         $iframe.style.display = 'none';
         $text.style.display = 'flex';
+    }
+
+    $form.onsubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        const $previewImage = $form.querySelector(':scope > .cover > .row > .preview-wrapper > .image');
+        if ($previewImage.getAttribute('src').startsWith('http://') ||
+            $previewImage.getAttribute('src').startsWith('https://')) {
+            formData.append('coverFileName', $previewImage.getAttribute('src'));
+        } else if ($previewImage.getAttribute('src').startsWith('blob:')) {
+            formData.append('_cover', $form['_cover'].files[0]);
+        } else {
+            Dialog.show({
+                title: '음원 등록 신청',
+                content: '커버 이미지를 선택해 주세요.',
+                buttons: [{
+                    text: '확인', onclick: ($dialog) => {
+                        Dialog.hide($dialog);
+                    }
+                }]
+            });
+            return;
+        }
+        const $youtubeIframe = $form.querySelector(':scope > .youtube > .row > .iframe-wrapper > .iframe');
+        if ($form['youtubeId'].value.length !== 11 || $form['youtubeId'].value !== $youtubeIframe.getAttribute('src').split('/').at(-1)) {
+            Dialog.show({
+                title: '음원 등록 신청',
+                content: '유튜브 식별자를 검증해 주세요.',
+                buttons: [{
+                    text: '확인', onclick: ($dialog) => {
+                        Dialog.hide($dialog);
+                    }
+                }]
+            });
+            return;
+        }
+        formData.append('youtubeId', $form['youtubeId'].value);
+        const $artistLabel = $form.findLabel('artist');
+        const $albumLabel = $form.findLabel('album');
+        const $releaseDateLabel = $form.findLabel('releaseDate');
+        const $genreLabel = $form.findLabel('genre');
+        const $nameLabel = $form.findLabel('name');
+        $artistLabel.setValid($form['artist'].value.length >= 1 && $form['artist'].value.length <= 50);
+        $albumLabel.setValid($form['album'].value.length >= 1 && $form['album'].value.length <= 50);
+        $releaseDateLabel.setValid($form['releaseDate'].value !== '');
+        $genreLabel.setValid($form['genre'].value.length >= 1 && $form['genre'].value.length <= 50);
+        $nameLabel.setValid($form['name'].value.length >= 1 && $form['name'].value.length <= 50);
+        if (!$artistLabel.isValid() || !$albumLabel.isValid() || !$releaseDateLabel.isValid() || !$genreLabel.isValid() || !$nameLabel.isValid()) {
+            return;
+        }
+        formData.append('artist', $form['artist'].value);
+        formData.append('album', $form['album'].value);
+        formData.append('releaseDate', $form['releaseDate'].value);
+        formData.append('genre', $form['genre'].value);
+        formData.append('name', $form['name'].value);
+        formData.append('lyrics', $form['lyrics'].value);
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState !== XMLHttpRequest.DONE) {
+                return;
+            }
+            Loading.hide();
+            if (xhr.status < 200 || xhr.status >= 300) {
+                Dialog.show({
+                    title: '오류',
+                    content: '요청을 전송하는 도중 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.',
+                    buttons: [{
+                        text: '확인', onclick: ($dialog) => {
+                            Dialog.hide($dialog);
+                        }
+                    }]
+                });
+                return;
+            }
+            const response = JSON.parse(xhr.responseText);
+            const [title, content, onclick] = {
+                failure: ['음원 등록 신청', '알 수 없는 이유로 음원 등록에 실패하였습니다. 잠시 후 다시 시도해 주세요.', ($dialog) => Dialog.hide($dialog)],
+                failure_duplicate_youtube_id: ['음원 등록 신청', `입력하신 유튜브 식별자 <b>${$form['youtubeId'].value}</b>는 이미 등록되어 있습니다.<br><br>다시 한 번 확인해 주세요.`, ($dialog) => Dialog.hide($dialog)],
+                failure_unsigned: ['음원 등록 신청', '세션이 만료되었습니다. 로그인 후 다시 시도해 주세요.<br><br>확인 버튼을 클릭하면 로그인 페이지로 이동합니다.', ($dialog) => {
+                    Dialog.hide($dialog);
+                    location.reload();
+                }],
+                success: ['음원 등록 신청', '음원 등록 신청이 완료되었습니다.<br><br>심사 완료 후 신청한 음원이 공개 상태로 전환됩니다.<br><br>확인 버튼을 클릭하면 음원 신청 내역 페이지로 이동합니다.', ($dialog) => {
+                    Dialog.hide($dialog);
+                    $navItems.find((x) => x.getAttribute('rel') === 'mymusic.register_history').click();
+                }]
+            } [response['result']] || ['오류', '서버가 알 수 없는 응답을 반환하였습니다. 잠시 후 다시 시도해 주세요.', ($dialog) => Dialog.hide($dialog)];
+            Dialog.show({
+                title: title,
+                content: content,
+                buttons: [{text: '확인', onclick: onclick}]
+            });
+        };
+        xhr.open('POST', '/music/');
+        xhr.send(formData);
+        Loading.show(0);
     }
 }

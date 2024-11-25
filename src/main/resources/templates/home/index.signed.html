@@ -37,7 +37,7 @@
                 <span class="row">
                     <input autocomplete="off" maxlength="25" minlength="1" name="melonKeyword" placeholder="멜론 음원 검색"
                            type="text" class="_field --obj-field -dark">
-                    <input autocomplete="off" maxlength="8" minlength="8" name="melonId" placeholder="멜론 음원 식별자"
+                    <input autocomplete="off" maxlength="25" minlength="1" name="melonId" placeholder="멜론 음원 식별자"
                            type="text" class="_field --obj-field -dark">
                     <button class="--obj-button -color-light-gray" name="melonCrawlButton" type="button">멜론 검색</button>
                     <span class="result">
@@ -91,35 +91,44 @@
                     </span>
                 </span>
             </label>
-            <label class="--obj-label -dark">
+            <label class="--obj-label -dark" data-id="artist">
                 <span class="_text">아티스트</span>
                 <input required autocomplete="off" type="text" class="_field --obj-field -dark" maxlength="50"
                        minlength="1" name="artist">
+                <span class="_warning">올바른 아티스트를 입력해 주세요.</span>
             </label>
-            <label class="--obj-label -dark">
+            <label class="--obj-label -dark" data-id="album">
                 <span class="_text">앨범 이름</span>
                 <input required autocomplete="off" type="text" class="_field --obj-field -dark" maxlength="50"
                        minlength="1" name="album">
+                <span class="_warning">올바른 앨범 이름을 입력해 주세요.</span>
             </label>
-            <label class="--obj-label -dark">
+            <label class="--obj-label -dark" data-id="releaseDate">
                 <span class="_text">발매일</span>
                 <input required autocomplete="off" type="date" class="_field --obj-field -dark" maxlength="50"
                        minlength="1" name="releaseDate">
+                <span class="_warning">올바른 발매일을 입력해 주세요.</span>
             </label>
-            <label class="--obj-label -dark">
+            <label class="--obj-label -dark" data-id="genre">
                 <span class="_text">장르</span>
                 <input required autocomplete="off" type="text" class="_field --obj-field -dark" maxlength="50"
                        minlength="1" name="genre">
+                <span class="_warning">올바른 장르를 입력해 주세요.</span>
             </label>
-            <label class="--obj-label -dark">
+            <label class="--obj-label -dark" data-id="name">
                 <span class="_text">곡 이름</span>
                 <input required autocomplete="off" type="text" class="_field --obj-field -dark" maxlength="50"
                        minlength="1" name="name">
+                <span class="_warning">올바른 곡 이름을 입력해 주세요.</span>
             </label>
-            <label class="--obj-label -dark">
+            <label class="--obj-label -dark" data-id="lyrics">
                 <span class="_text">가사</span>
                 <textarea maxlength="10000" minlength="0" name="lyrics" class="_field --obj-field -dark"></textarea>
+                <span class="_warning">올바른 가사를 입력해 주세요.</span>
             </label>
+            <div class="button-container">
+                <button class="--obj-button -color-primary" type="submit">음원 등록 신청</button>
+            </div>
         </form>
     </div>
     <div class="content" rel="mymusic.register_history">
