@@ -9,4 +9,6 @@ public interface MusicMapper {
     int insertMusic(MusicEntity music);
 
     MusicEntity selectMusicByYoutubeId(@Param("youtubeId") String youtubeId);
+
+    MusicEntity[] selectMusicsByUserEmail(@Param("userEmail") String userEmail);
 }

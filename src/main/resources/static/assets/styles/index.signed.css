@@ -64,7 +64,7 @@ body .-spring {
 #main {
   background-color: #222324;
   flex-grow: 1;
-  overflow: hidden auto;
+  overflow: auto;
   position: relative;
   scrollbar-color: #424242 #222324; /* 스크롤바 색상: 잡는거색 전체색 */
   scrollbar-width: thin; /* 스크롤바 굵기: auto/thin/none 밖에 없음, px, rem 못 줌. */
@@ -76,7 +76,7 @@ body .-spring {
 #main .content {
   top: 3.5rem;
   left: 0;
-  width: 100%;
+  max-width: 0;
   max-height: 0;
   box-sizing: border-box;
   opacity: 0;
@@ -90,6 +90,7 @@ body .-spring {
   transition-timing-function: ease;
 }
 #main .content.-visible {
+  max-width: initial;
   max-height: initial;
   overflow: initial;
   opacity: 1;
@@ -390,6 +391,25 @@ body .-spring {
 }
 #main > .content[rel="mymusic.register"] > form > .youtube > .row > .iframe-wrapper > .iframe {
   border: none;
+}
+
+#main > .content[rel="mymusic.register_history"] > .button-container {
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  gap: 0.375rem;
+  justify-content: flex-start;
+  margin-bottom: 0.5rem;
+}
+#main > .content[rel="mymusic.register_history"] > .button-container .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main > .content[rel="mymusic.register_history"] > table > tbody > tr > td > .cover {
+  width: 2.25rem;
+  height: 2.25rem;
+  object-fit: cover;
+  object-position: center;
 }
 
 #player {

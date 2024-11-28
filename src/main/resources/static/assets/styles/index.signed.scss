@@ -60,7 +60,7 @@ body {
 #main {
   background-color: #222324;
   flex-grow: 1;
-  overflow: hidden auto;
+  overflow: auto;
   position: relative;
 
   scrollbar-color: #424242 #222324; /* 스크롤바 색상: 잡는거색 전체색 */
@@ -74,7 +74,7 @@ body {
   .content {
     top: 3.5rem;
     left: 0;
-    width: 100%;
+    max-width: 0;
     max-height: 0;
     box-sizing: border-box;
     opacity: 0;
@@ -88,6 +88,7 @@ body {
     transition-timing-function: ease;
 
     &.-visible {
+      max-width: initial;
       max-height: initial;
       overflow: initial;
       opacity: 1;
@@ -322,7 +323,22 @@ body {
       }
     }
   }
+}
 
+#main > .content[rel="mymusic.register_history"] {
+  > .button-container {
+    @include flex(row, stretch, flex-start, 0.375rem);
+    margin-bottom: 0.5rem;
+  }
+
+  > table > tbody > tr > td {
+    > .cover {
+      width: 2.25rem;
+      height: 2.25rem;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
 }
 
 #player {

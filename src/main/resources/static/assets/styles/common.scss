@@ -366,22 +366,56 @@ ol, ul {
 .--obj-table {
   border-spacing: 0;
 
+  .-no-padding {
+    padding: 0 !important;
+  }
+
   .-spacer {
     width: 100%;
   }
 
   .-text-align-center {
-    text-align: center;
+    text-align: center !important;
   }
 
   th {
     font: inherit;
-    padding: 0.5rem;
+    padding: 0.625rem 1rem;
     white-space: nowrap;
   }
 
   td {
+    padding: 0.425rem 1rem;
     white-space: nowrap;
+  }
+
+  &.-dark {
+    > thead > tr > th {
+      $background-color: #1c1d1e;
+      background-color: $background-color;
+
+      &:not(:last-of-type) {
+        border-right: 0.0625rem solid lighten($background-color, 5%);
+      }
+    }
+
+    > tbody > tr:nth-child(odd) > * {
+      $background-color: #222324;
+      background-color: $background-color;
+
+      &:not(:last-of-type) {
+        border-right: 0.0625rem solid lighten($background-color, 2.5%);
+      }
+    }
+
+    > tbody > tr:nth-child(even) > * {
+      $background-color: darken(#222324, 1%);
+      background-color: $background-color;
+
+      &:not(:last-of-type) {
+        border-right: 0.0625rem solid lighten($background-color, 2.5%);
+      }
+    }
   }
 }
 

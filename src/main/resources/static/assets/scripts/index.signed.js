@@ -4,6 +4,7 @@ const $main = document.getElementById('main');
 const $mainContents = Array.from($main.querySelectorAll(':scope > .content[rel]'));
 const navActionMap = {
     'mymusic.register': () => $mainContents.find((x) => x.getAttribute('rel') === 'mymusic.register').querySelector(':scope > form').reset(),
+    'mymusic.register_history': () => $mainContents.find((x) => x.getAttribute('rel') === 'mymusic.register_history').querySelector(':scope > .button-container > [name="refresh"]').click()
 };
 
 $navItems.forEach(($navItem) => {
@@ -327,6 +328,101 @@ $navItems.forEach(($navItem) => {
         };
         xhr.open('POST', '/music/');
         xhr.send(formData);
+        Loading.show(0);
+    }
+}
+
+{
+    const $content = $mainContents.find((x) => x.getAttribute('rel') === 'mymusic.register_history');
+    const $refreshButton = $content.querySelector(':scope > .button-container> [name="refresh"]');
+    const $table = $content.querySelector(':scope > table');
+    const $tbody = $table.querySelector(':scope > tbody');
+    $refreshButton.onclick = () => {
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState !== XMLHttpRequest.DONE) {
+                return;
+            }
+            Loading.hide();
+            if (xhr.status < 200 || xhr.status >= 300) {
+                Dialog.show({
+                    title: '오류',
+                    content: '요청을 전송하는 도중 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.',
+                    buttons: [{
+                        text: '확인', onclick: ($dialog) => {
+                            Dialog.hide($dialog);
+                        }
+                    }]
+                })
+                return;
+            }
+            const response = JSON.parse(xhr.responseText);
+            if (response['result'] === "failure") {
+                Dialog.show({
+                    title: '음원 등록 신청 내역',
+                    content: '알 수 없는 이유로 음원 등록 신청 내역을 조회하지 못하였습니다. 잠시 후 다시 시도해 주세요.',
+                    buttons: [{
+                        text: '확인', onclick: ($dialog) => {
+                            Dialog.hide($dialog);
+                        }
+                    }]
+                })
+            } else if (response['result'] === "failure_unsigned") {
+                Dialog.show({
+                    title: '음원 등록 신청 내역',
+                    content: '세션이 만료되었습니다. 로그인 후 다시 시도해 주세요.<br><br>확인 버튼을 클릭하면 로그인 페이지로 이동합니다.',
+                    buttons: [{
+                        text: '확인', onclick: ($dialog) => {
+                            Dialog.hide($dialog);
+                            location.reload();
+                        }
+                    }]
+                })
+            } else if (response['result'] === 'success') {
+                $tbody.innerHTML = '';
+                for (const music of response['musics']) {
+                    const $tr = new DOMParser().parseFromString(`
+                     <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label class="--obj-check-label">
+                                        <input class="_input" name=check type="checkbox">
+                                        <span class="_box"></span>
+                                    </label>
+                                </td>
+                                <td class="-text-align-center">${music['index']}</td>
+                                <td class="-no-padding"><img alt="" class="cover" src="/music/cover?index=${music['index']}"></td>
+                                <td>${music['artist']}</td>
+                                <td>${music['album']}</td>
+                                <td class="-text-align-center">${music['releaseDate']}</td>
+                                <td>${music['genre']}</td>
+                                <td>${music['name']}</td>
+                                <td>${music['youtubeId']}</td>
+                                <td>${{ALLOWED: '승인', DENIED: '반려', PENDING: '승인 대기중'}[music['status']]}</td>
+                                <td>
+                                    <button class="--obj-button -color-red -size-small" name="withdraw" type="button">신청 취소</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                     </table>
+                    `, 'text/html').querySelector('tr');
+                    $tbody.append($tr);
+                }
+            } else {
+                Dialog.show({
+                    title: '오류',
+                    content: '서버가 알 수 없는 응답을 반환하였습니다. 잠시 후 다시 시도해 주세요.',
+                    buttons: [{
+                        text: '확인', onclick: ($dialog) => {
+                            Dialog.hide($dialog);
+                        }
+                    }]
+                })
+            }
+        };
+        xhr.open('GET', `/music/inquiries`);
+        xhr.send();
         Loading.show(0);
     }
 }

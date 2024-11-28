@@ -21,9 +21,6 @@
                `genre`              AS `genre`,
                `name`               AS `name`,
                `lyrics`             AS `lyrics`,
-               `cover_date`         AS `coverData`,
-               `cover_content_type` AS `coverContentType`,
-               `cover_file_name`    AS `coverFileName`,
                `youtube_id`         AS `youtubeId`,
                `status`             AS `status`,
                `created_at`         AS `createdAt`,
@@ -32,5 +29,24 @@
         FROM `meltube`.`musics`
         WHERE `youtube_id` = #{youtubeId}
         LIMIT 1
+    </select>
+    <select id="selectMusicsByUserEmail"
+            resultType="com.escass.meltube.entities.MusicEntity">
+        SELECT `index`              AS `index`,
+               `user_email`         AS `userEmail`,
+               `artist`             AS `artist`,
+               `album`              AS `album`,
+               `release_date`       AS `releaseDate`,
+               `genre`              AS `genre`,
+               `name`               AS `name`,
+               `lyrics`             AS `lyrics`,
+               `youtube_id`         AS `youtubeId`,
+               `status`             AS `status`,
+               `created_at`         AS `createdAt`,
+               `updated_at`         AS `updatedAt`,
+               `is_deleted`         AS `isDeleted`
+        FROM `meltube`.`musics`
+        WHERE user_email = #{userEmail}
+        ORDER BY `index` DESC
     </select>
 </mapper>

@@ -6,6 +6,7 @@ import com.escass.meltube.mappers.MusicMapper;
 import com.escass.meltube.results.CommonResult;
 import com.escass.meltube.results.Result;
 import com.escass.meltube.results.music.AddMusicResult;
+import com.escass.meltube.vos.ResultVo;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -142,6 +143,16 @@ public class MusicService {
         }
         music.setYoutubeId(youtubeId);
         return music;
+    }
+
+    public ResultVo<Result, MusicEntity[]> getMusicInquiriesByUser(UserEntity user) {
+        if (user == null || user.isSuspended() || user.getDeletedAt() != null) {
+            return ResultVo.<Result, MusicEntity[]>builder().result(CommonResult.FAILURE_UNSIGNED).build();
+        }
+        return ResultVo.<Result, MusicEntity[]>builder()
+                .result(CommonResult.SUCCESS)
+                .payload(this.musicMapper.selectMusicsByUserEmail(user.getEmail()))
+                .build();
     }
 
     public MusicEntity[] searchMelon(String keyword) throws IOException, InterruptedException {
