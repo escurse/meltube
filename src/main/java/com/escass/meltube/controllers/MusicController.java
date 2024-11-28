@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,20 @@ public class MusicController {
     @ResponseBody
     public MusicEntity getCrawlMelon(@RequestParam(value = "id", required = false) String id) throws IOException {
         return this.musicService.crawlMelon(id);
+    }
+
+    @RequestMapping(value = "/cover", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> getCover(@RequestParam(value = "index", required = false) Integer index) {
+        MusicEntity music = this.musicService.getMusicByIndex(index, true);
+        if (music == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.parseMediaType(music.getCoverContentType()))
+                .contentLength(music.getCoverData().length)
+                .body(music.getCoverData());
     }
 
     @RequestMapping(value = "/inquiries", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

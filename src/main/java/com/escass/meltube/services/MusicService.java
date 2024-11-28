@@ -15,6 +15,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -143,6 +144,13 @@ public class MusicService {
         }
         music.setYoutubeId(youtubeId);
         return music;
+    }
+
+    public MusicEntity getMusicByIndex(Integer index, boolean includeCover) {
+        if (index == null || index < 1) {
+            return null;
+        }
+        return this.musicMapper.selectMusicByIndex(index, includeCover);
     }
 
     public ResultVo<Result, MusicEntity[]> getMusicInquiriesByUser(UserEntity user) {

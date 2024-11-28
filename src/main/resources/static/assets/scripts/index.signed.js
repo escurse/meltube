@@ -395,7 +395,7 @@ $navItems.forEach(($navItem) => {
                                 <td class="-no-padding"><img alt="" class="cover" src="/music/cover?index=${music['index']}"></td>
                                 <td>${music['artist']}</td>
                                 <td>${music['album']}</td>
-                                <td class="-text-align-center">${music['releaseDate']}</td>
+                                <td class="-text-align-center">${music['releaseDate'].map((x, i) => i === 0 ? x : x.toString().padStart(2, '0')).join('-')}</td>
                                 <td>${music['genre']}</td>
                                 <td>${music['name']}</td>
                                 <td>${music['youtubeId']}</td>

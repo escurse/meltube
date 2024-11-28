@@ -6,7 +6,7 @@
     <insert id="insertMusic"
             parameterType="com.escass.meltube.entities.MusicEntity">
         INSERT INTO `meltube`.`musics` (`user_email`, `artist`, `album`, `release_date`, `genre`, `name`, `lyrics`,
-                                        `cover_date`, `cover_content_type`, `cover_file_name`, `youtube_id`, `status`,
+                                        `cover_data`, `cover_content_type`, `cover_file_name`, `youtube_id`, `status`,
                                         `created_at`, `updated_at`, `is_deleted`)
         VALUES (#{userEmail}, #{artist}, #{album}, #{releaseDate}, #{genre}, #{name}, #{lyrics}, #{coverData},
                 #{coverContentType}, #{coverFileName}, #{youtubeId}, #{status}, #{createdAt}, #{updatedAt}, #{isDeleted})
@@ -48,5 +48,29 @@
         FROM `meltube`.`musics`
         WHERE user_email = #{userEmail}
         ORDER BY `index` DESC
+    </select>
+    <select id="selectMusicByIndex"
+            resultType="com.escass.meltube.entities.MusicEntity">
+        SELECT `index` AS `index`,
+               `user_email` AS `userEmail`,
+               `artist` AS `artist`,
+               `album` AS `album`,
+               `release_date` AS `releaseDate`,
+               `genre` AS `genre`,
+               `name` AS `name`,
+               `lyrics` AS `lyrics`,
+               `youtube_id` AS `youtubeId`,
+               `status` AS `status`,
+               `created_at` AS `createdAt`,
+               `updated_at` AS `updatedAt`,
+               `is_deleted` AS `isDeleted`
+        <if test="includeCover == true">
+            ,`cover_data` AS `coverData`,
+            `cover_content_type` AS `coverContentType`,
+            `cover_file_name` AS `coverFileName`
+        </if>
+        FROM `meltube`.`musics`
+        WHERE `index` = #{index}
+        LIMIT 1
     </select>
 </mapper>
