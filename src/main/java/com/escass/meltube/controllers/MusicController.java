@@ -46,6 +46,16 @@ public class MusicController {
                 .body(music.getCoverData());
     }
 
+    @RequestMapping(value = "/", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String deleteIndex(@SessionAttribute(value = "user", required = false) UserEntity user,
+                              @RequestParam(value = "indexes", required = false) int[] indexes) {
+        JSONObject response = new JSONObject();
+        Result result = this.musicService.withdrawInquiries(user, indexes);
+        response.put(Result.NAME, result.nameToLower());
+        return response.toString();
+    }
+
     @RequestMapping(value = "/inquiries", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String getInquiries(@SessionAttribute(value = "user", required = false) UserEntity user) throws JsonProcessingException {

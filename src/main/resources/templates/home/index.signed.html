@@ -21,6 +21,10 @@
         <li class="item" rel="mymusic.register">음원 등록 신청</li>
         <li class="item" rel="mymusic.register_history">음원 등록 신청 내역</li>
     </ul>
+    <ul class="menu" th:if="${session.user.isAdmin() == true}">
+        <li class="title">관리자</li>
+        <li class="item" rel="admin.music">음원 관리</li>
+    </ul>
 </nav>
 <main id="main">
     <header class="header">
@@ -180,6 +184,9 @@
             </tr>
             </tbody>
         </table>
+    </div>
+    <div class="content" rel="admin.music">
+        hi
     </div>
 </main>
 <section id="player">

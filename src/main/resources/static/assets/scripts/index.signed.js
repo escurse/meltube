@@ -333,10 +333,115 @@ $navItems.forEach(($navItem) => {
 }
 
 {
+    /**
+     * @param {Array<number>} indexArray
+     */
+    const withdraw = (indexArray) => {
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData();
+        for (const index of indexArray) {
+            formData.append('indexes', index.toString());
+        }
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState !== XMLHttpRequest.DONE) {
+                return;
+            }
+            Loading.hide();
+            if (xhr.status < 200 || xhr.status >= 300) {
+                Dialog.show({
+                    title: '오류',
+                    content: '요청을 전송하는 도중 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.',
+                    buttons: [{
+                        text: '확인', onclick: ($dialog) => {
+                            Dialog.hide($dialog);
+                        }
+                    }]
+                })
+                return;
+            }
+            const response = JSON.parse(xhr.responseText);
+            const [title, content, onclick] = {
+                failure: ['음원 등록 신청 취소', '알 수 없는 이유로 음원 등록 신청 취소에 실패하였습니다. 잠시 후 다시 시도해 주세요.'],
+                failure_unsigned: ['음원 등록 신청 취소', '세션이 만료되었습니다. 로그인 후 다시 시도해 주세요.<br><br>확인버튼을 클릭하면 로그인 페이지로 이동합니다.', ($dialog) => {
+                    Dialog.hide($dialog);
+                    location.reload();
+                }],
+                success: ['음원 등록 신청 취소', '음원 등록 신청이 성공적으로 취소되었습니다.', ($dialog) => {
+                    Dialog.hide($dialog);
+                    $mainContents.find((x) => x.getAttribute('rel') === 'mymusic.register_history').querySelector(':scope > .button-container > [name="refresh"]').click();
+                }]
+            }[response['result']] || ['오류', '서버가 알 수 없는 응답을 반환하였습니다.', '잠시 후 다시 시도해 주세요.', ($dialog) => Dialog.hide($dialog)];
+            Dialog.show({
+                title: title,
+                content: content,
+                buttons: [{text: '확인', onclick: onclick}]
+            })
+        };
+        xhr.open('DELETE', '/music/');
+        xhr.send(formData);
+        Loading.show(0);
+    };
+
     const $content = $mainContents.find((x) => x.getAttribute('rel') === 'mymusic.register_history');
+    const $selectAllButton = $content.querySelector(':scope > .button-container > [name="selectAll"]');
+    const $unselectAllButton = $content.querySelector(':scope > .button-container > [name="unselectAll"]');
+    const $withdrawButton = $content.querySelector(':scope > .button-container > [name="withdraw"]');
     const $refreshButton = $content.querySelector(':scope > .button-container> [name="refresh"]');
     const $table = $content.querySelector(':scope > table');
     const $tbody = $table.querySelector(':scope > tbody');
+    $selectAllButton.onclick = () => $tbody.querySelectorAll(':scope > tr > td > label > input[name="check"]').forEach((x) => x.checked = true);
+    $unselectAllButton.onclick = () => $tbody.querySelectorAll(':scope > tr > td > label > input[name="check"]').forEach((x) => x.checked = false);
+    $withdrawButton.onclick = () => {
+        const $trs = $tbody.querySelectorAll(':scope > tr');
+        const indexArray = [];
+        let inValidTrIncluded = false;
+        for (const $tr of $trs) {
+            if ($tr.querySelector(':scope > td > label > input[name="check"]').checked) {
+                indexArray.push($tr.dataset['index']);
+                if ($tr.dataset['status'] !== 'PENDING') {
+                    inValidTrIncluded = true;
+                    break;
+                }
+            }
+        }
+        if (inValidTrIncluded === true) {
+            Dialog.show({
+                title: '선택 신청 취소',
+                content: '상태가 <i>승인 대기 중</i>이 아닌 항목을 신청 취소할 수 없습니다.',
+                buttons: [{
+                    text: '확인', onclick: ($dialog) => {
+                        Dialog.hide($dialog);
+                    }
+                }]
+            })
+            return;
+        }
+        if (indexArray.length === 0) {
+            Dialog.show({
+                title: '선택 신청 취소',
+                content: '음원 등록 신청을 취소할 항목을 한 개 이상 체크해 주세요.',
+                buttons: [{
+                    text: '확인', onclick: ($dialog) => {
+                        Dialog.hide($dialog);
+                    }
+                }]
+            })
+            return;
+        }
+        Dialog.show({
+            title: '선택 취소 신청',
+            content: `정말로 선택한 <b>${indexArray.length.toLocaleString()}</b>개의 음원 등록 신청을 취소할까요?<br><br>취소한 내역은 복구할 수 없습니다.`,
+            buttons: [
+                {text: '취소', onclick: ($dialog) => Dialog.hide($dialog)},
+                {
+                    text: '계속', onclick: ($dialog) => {
+                        Dialog.hide($dialog)
+                        withdraw(indexArray);
+                    }
+                }
+            ]
+        })
+    }
     $refreshButton.onclick = () => {
         const xhr = new XMLHttpRequest();
         xhr.onreadystatechange = () => {
@@ -384,7 +489,7 @@ $navItems.forEach(($navItem) => {
                     const $tr = new DOMParser().parseFromString(`
                      <table>
                         <tbody>
-                            <tr>
+                            <tr data-index="${music['index']}" data-status="${music['status']}">
                                 <td>
                                     <label class="--obj-check-label">
                                         <input class="_input" name=check type="checkbox">
@@ -407,6 +512,35 @@ $navItems.forEach(($navItem) => {
                         </tbody>
                      </table>
                     `, 'text/html').querySelector('tr');
+                    const $withdrawButton = $tr.querySelector(':scope > td > button[name="withdraw"]');
+                    $withdrawButton.onclick = () => {
+                        if (music['status'] !== 'PENDING') {
+                            Dialog.show({
+                                title: '선택 신청 취소',
+                                content: '상태가 <i>승인 대기 중</i>이 아닌 항목을 신청 취소할 수 없습니다.',
+                                buttons: [{
+                                    text: '확인', onclick: ($dialog) => {
+                                        Dialog.hide($dialog);
+                                    }
+                                }]
+                            })
+                            return;
+                        }
+                        Dialog.show({
+                            title: '선택 취소 신청',
+                            content: `정말로 해당 음원 등록 신청을 취소할까요?<br><br>취소한 내역은 복구할 수 없습니다.`,
+                            buttons: [
+                                {text: '취소', onclick: ($dialog) => Dialog.hide($dialog)},
+                                {
+                                    text: '계속', onclick: ($dialog) => {
+                                        Dialog.hide($dialog)
+                                        withdraw([music['index']]);
+                                    }
+                                }
+                            ]
+                        })
+
+                    }
                     $tbody.append($tr);
                 }
             } else {

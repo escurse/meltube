@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface MusicMapper {
     int insertMusic(MusicEntity music);
+    int updateMusic(@Param("music") MusicEntity music,
+                    @Param("includeCover") boolean includeCover);
 
     MusicEntity selectMusicByIndex(@Param("index") int index,
                                    @Param("includeCover") boolean includeCover);

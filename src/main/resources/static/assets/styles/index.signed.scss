@@ -8,14 +8,15 @@ body {
 }
 
 #nav {
+  @include flex(column, flex-start, flex-start, 1rem);
   width: 10rem;
   padding: 1rem;
   background-color: #222324;
   user-select: none;
 
-  .logo {
+  > .logo {
     height: 2rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     -webkit-user-drag: none;
   }
 
