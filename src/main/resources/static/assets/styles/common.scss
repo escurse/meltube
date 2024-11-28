@@ -272,6 +272,11 @@ ol, ul {
   transition-timing-function: ease;
   user-select: none;
 
+  &.-size-small {
+    font-size: 0.75rem;
+    padding: 0.425rem;
+  }
+
   &.-color-primary {
     $background_color: #01cd3d;
     background-color: $background_color;
@@ -356,6 +361,10 @@ ol, ul {
     background-repeat: no-repeat;
     background-size: 75%;
   }
+}
+
+.--obj-table {
+
 }
 
 
