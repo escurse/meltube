@@ -345,4 +345,22 @@ ol, ul {
   background-size: 75%;
 }
 
+.--obj-table {
+  border-spacing: 0;
+}
+.--obj-table .-spacer {
+  width: 100%;
+}
+.--obj-table .-text-align-center {
+  text-align: center;
+}
+.--obj-table th {
+  font: inherit;
+  padding: 0.5rem;
+  white-space: nowrap;
+}
+.--obj-table td {
+  white-space: nowrap;
+}
+
 /*# sourceMappingURL=common.css.map */
