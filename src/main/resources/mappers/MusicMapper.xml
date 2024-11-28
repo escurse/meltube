@@ -99,4 +99,25 @@
         AND `is_deleted` IS FALSE
         LIMIT 1
     </select>
+    <select id="selectMusics" parameterType="com.escass.meltube.entities.MusicEntity">
+        SELECT `index` AS `index`,
+        `user_email` AS `userEmail`,
+        `artist` AS `artist`,
+        `album` AS `album`,
+        `release_date` AS `releaseDate`,
+        `genre` AS `genre`,
+        `name` AS `name`,
+        `lyrics` AS `lyrics`,
+        <if test="includeCover == true">
+            `cover_data` AS `coverData`,
+            `cover_content_type` AS `coverContentType`,
+            `cover_file_name` AS `coverFileName`,
+        </if>
+        `youtube_id` AS `youtubeId`,
+        `status` AS `status`,
+        `created_at` AS `createdAt`,
+        `updated_at` AS `updatedAt`,
+        `is_deleted` AS `isDeleted`
+        FROM `meltube`.`musics`
+    </select>
 </mapper>

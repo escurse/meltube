@@ -421,6 +421,25 @@ body .-spring {
   object-position: center;
 }
 
+#main > .content[rel="admin.music"] > .button-container {
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  gap: 0.375rem;
+  justify-content: flex-start;
+  margin-bottom: 0.5rem;
+}
+#main > .content[rel="admin.music"] > .button-container .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main > .content[rel="admin.music"] > table > tbody > tr > td > .cover {
+  width: 2.25rem;
+  height: 2.25rem;
+  object-fit: cover;
+  object-position: center;
+}
+
 #player {
   align-items: stretch;
   display: flex;

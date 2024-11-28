@@ -4,7 +4,8 @@ const $main = document.getElementById('main');
 const $mainContents = Array.from($main.querySelectorAll(':scope > .content[rel]'));
 const navActionMap = {
     'mymusic.register': () => $mainContents.find((x) => x.getAttribute('rel') === 'mymusic.register').querySelector(':scope > form').reset(),
-    'mymusic.register_history': () => $mainContents.find((x) => x.getAttribute('rel') === 'mymusic.register_history').querySelector(':scope > .button-container > [name="refresh"]').click()
+    'mymusic.register_history': () => $mainContents.find((x) => x.getAttribute('rel') === 'mymusic.register_history').querySelector(':scope > .button-container > [name="refresh"]').click(),
+    'admin.music': () => $mainContents.find((x) => x.getAttribute('rel') === 'admin.music').querySelector(':scope > .button-container > [name="refresh"]').click()
 };
 
 $navItems.forEach(($navItem) => {
@@ -560,3 +561,28 @@ $navItems.forEach(($navItem) => {
         Loading.show(0);
     }
 }
+
+// {
+//     const $content = $mainContents.find((x) => x.getAttribute('rel') === 'admin.music');
+//     const xhr = new XMLHttpRequest();
+//     xhr.onreadystatechange = () => {
+//         if (xhr.readyState !== XMLHttpRequest.DONE) {
+//             return;
+//         }
+//         if (xhr.status < 200 || xhr.status >= 300) {
+//             Dialog.show({
+//                 title: '오류',
+//                 content: '요청을 전송하는 도중 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.',
+//                 buttons: [{
+//                     text: '확인', onclick: ($dialog) => {
+//                         Dialog.hide($dialog);
+//                     }
+//                 }]
+//             })
+//             return;
+//         }
+//         const response = xhr.responseText;
+//     };
+//     xhr.open('GET', '/admin/musics');
+//     xhr.send();
+// }

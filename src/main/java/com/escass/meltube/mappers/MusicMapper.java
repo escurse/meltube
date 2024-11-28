@@ -16,4 +16,6 @@ public interface MusicMapper {
     MusicEntity selectMusicByYoutubeId(@Param("youtubeId") String youtubeId);
 
     MusicEntity[] selectMusicsByUserEmail(@Param("userEmail") String userEmail);
+
+    MusicEntity[] selectMusics(@Param("includeCover") boolean includeCover);
 }
