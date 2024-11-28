@@ -2,11 +2,18 @@ const $nav = document.getElementById('nav');
 const $navItems = Array.from($nav.querySelectorAll(':scope > .menu > .item[rel]'));
 const $main = document.getElementById('main');
 const $mainContents = Array.from($main.querySelectorAll(':scope > .content[rel]'));
+const navActionMap = {
+    'mymusic.register': () => $mainContents.find((x) => x.getAttribute('rel') === 'mymusic.register').querySelector(':scope > form').reset(),
+};
 
 $navItems.forEach(($navItem) => {
     $navItem.onclick = () => {
         const rel = $navItem.getAttribute('rel');
+        const action = navActionMap[rel];
         const $mainContent = $mainContents.find((x) => x.getAttribute('rel') === rel);
+        if (typeof action === 'function') {
+            action();
+        }
         $navItems.forEach((x) => x.classList.remove('-selected'));
         $navItem.classList.add('-selected');
         $mainContents.forEach((x) => x.hide());

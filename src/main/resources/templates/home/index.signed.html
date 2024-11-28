@@ -26,7 +26,7 @@
     <header class="header">
 
     </header>
-    <div class="content -visible" rel="mymusic.register">
+    <div class="content" rel="mymusic.register">
         <h3 class="subtitle">마이뮤직</h3>
         <h2 class="title">음원 등록 신청</h2>
         <form novalidate class="default-form">
@@ -131,9 +131,19 @@
             </div>
         </form>
     </div>
-    <div class="content" rel="mymusic.register_history">
+    <div class="content -visible" rel="mymusic.register_history">
         <h3 class="subtitle">마이뮤직</h3>
         <h2 class="title">음원 등록 신청 내역</h2>
+        <div class="button-container">
+            <button class="--obj-button -color-light-gray" name="selectAll" type="button">전체 선택</button>
+            <button class="--obj-button -color-light-gray" name="unselectAll" type="button">전체 선택 해제</button>
+            <span class="-spring"></span>
+            <button class="--obj-button -color-red" name="withdraw" type="button">선택 신청 취소</button>
+            <button class="--obj-button -color-blue" name="refresh" type="button">새로고침</button>
+        </div>
+        <table class="table">
+
+        </table>
     </div>
 </main>
 <section id="player">

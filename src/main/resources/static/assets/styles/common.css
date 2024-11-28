@@ -284,6 +284,26 @@ ol, ul {
 .--obj-button.-color-light-gray:active {
   background-color: rgb(134.5, 134.5, 134.5);
 }
+.--obj-button.-color-blue {
+  background-color: #3498db;
+  color: #ffffff;
+}
+.--obj-button.-color-blue:hover {
+  background-color: rgb(36.9790794979, 139.6987447699, 208.5209205021);
+}
+.--obj-button.-color-blue:active {
+  background-color: rgb(33.1380753138, 125.1882845188, 186.8619246862);
+}
+.--obj-button.-color-red {
+  background-color: #e74c3c;
+  color: #ffffff;
+}
+.--obj-button.-color-red:hover {
+  background-color: rgb(228.2054794521, 55.1575342466, 37.2945205479);
+}
+.--obj-button.-color-red:active {
+  background-color: rgb(213.698630137, 43.8356164384, 26.301369863);
+}
 
 .--obj-check-label {
   align-items: center;
