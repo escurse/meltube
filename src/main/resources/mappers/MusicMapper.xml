@@ -52,6 +52,7 @@
         FROM `meltube`.`musics`
         WHERE `youtube_id` = #{youtubeId}
           AND `is_deleted` IS FALSE
+        AND `status` = 'PENDING'
         LIMIT 1
     </select>
     <select id="selectMusicsByUserEmail"
@@ -118,5 +119,6 @@
         `updated_at` AS `updatedAt`,
         `is_deleted` AS `isDeleted`
         FROM `meltube`.`musics`
+        ORDER BY `index` DESC
     </select>
 </mapper>
