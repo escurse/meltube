@@ -567,6 +567,8 @@ $navItems.forEach(($navItem) => {
     if ($content) {  // $content != null  ===  ($content !== null && $content !== undefined)
         const $selectAllButton = $content.querySelector(':scope > .button-container > [name="selectAll"]');
         const $unselectAllButton = $content.querySelector(':scope > .button-container > [name="unselectAll"]');
+        const $filterForm = $content.querySelector(':scope > .button-container > .filter-form');
+        const $releaseButton = $filterForm.querySelector(':scope > button[name="release"]')
         const $detailButton = $content.querySelector(':scope > .button-container > [name="detail"]');
         const $allowButton = $content.querySelector(':scope > .button-container > [name="allow"]');
         const $denyButton = $content.querySelector(':scope > .button-container > [name="deny"]');
@@ -608,6 +610,72 @@ $navItems.forEach(($navItem) => {
             Loading.show(0);
         }
 
+        /**
+         * @param {Array<number>} indexes
+         */
+        const sendDeleteRequest = (indexes) => {
+            const xhr = new XMLHttpRequest();
+            const formData = new FormData();
+            indexes.forEach((index) => formData.append('indexes', index.toString()));
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState !== XMLHttpRequest.DONE) {
+                    return;
+                }
+                Loading.hide();
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    Dialog.defaultOK('오류', '요청을 전송하는 도중 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.')
+                    return;
+                }
+                const response = JSON.parse(xhr.responseText);
+                const title = '음원 삭제';
+                const [content, onclick] = {
+                    failure: ['알 수 없는 이유로 음원을 삭제하지 못하였습니다. 잠시 후 다시 시도해 주세요.'],
+                    failure_unsigned: ['세션이 만료되었습니다. 로그인 후 다시 시도해 주세요.<br><br>확인 버튼을 클릭하면 로그인 페이지로 이동합니다.', () => location.reload()],
+                    success: ['음원을 성공적으로 삭제하였습니다.', () => $content.querySelector(':scope > .button-container > [name="refresh"]').click()]
+                }[response['result']] || ['서버가 알 수 없는 응답을 반환하였습니다. 잠시 후 다시 시도해 주세요.'];
+                Dialog.defaultOK(title, content, onclick)
+            };
+            xhr.open('DELETE', 'admin/music/');
+            xhr.send(formData);
+            Loading.show(0)
+        };
+
+        $filterForm.onsubmit = (e) => {
+            e.preventDefault();
+            const $trs = Array.from($tbody.querySelectorAll(':scope > tr'));
+            for (const $tr of $trs) {
+                let visible = true;
+                if ($filterForm['status'].value === 'allowed') {
+                    visible = $tr.dataset['status'] === 'ALLOWED' && $tr.dataset['deleted'] === 'false';
+                } else if ($filterForm['status'].value === 'denied') {
+                    visible = $tr.dataset['status'] === 'DENIED' && $tr.dataset['deleted'] === 'false';
+                } else if ($filterForm['status'].value === 'pending') {
+                    visible = $tr.dataset['status'] === 'PENDING' && $tr.dataset['deleted'] === 'false';
+                } else if ($filterForm['status'].value === 'deleted') {
+                    visible = $tr.dataset['deleted'] === 'true';
+                }
+                if (visible === true) {
+                    const keyword = $filterForm['keyword'].value;
+                    const $tds = Array.from($tr.querySelectorAll(':scope > td'));
+                    visible = $tds[1].innerText.includes(keyword) ||
+                        $tds[2].innerText.includes(keyword) ||
+                        $tds[3].innerText.includes(keyword) ||
+                        $tds[4].innerText.includes(keyword) ||
+                        $tds[5].innerText.includes(keyword) ||
+                        $tds[6].innerText.includes(keyword) ||
+                        $tds[7].innerText.includes(keyword) ||
+                        $tds[8].innerText.includes(keyword) ||
+                        $tds[9].innerText.includes(keyword)
+                }
+                $tr.style.display = visible === true ? 'table-row' : 'none';
+            }
+        }
+
+        $releaseButton.onclick = () => {
+            $filterForm.reset();
+            $tbody.querySelectorAll(':scope > tr').forEach(($tr) => $tr.style.display = 'table-row');
+        }
+
         $selectAllButton.onclick = () => $tbody.querySelectorAll(':scope > tr > td > label > input[name="check"]').forEach((x) => x.checked = true);
 
         $unselectAllButton.onclick = () => $tbody.querySelectorAll(':scope > tr > td > label > input[name="check"]').forEach((x) => x.checked = false);
@@ -620,20 +688,16 @@ $navItems.forEach(($navItem) => {
             const $trs = getCheckedTrs();
             if ($trs.length === 0) {
                 Dialog.defaultOK('삭제 승인', '삭제할 항목을 한 개 이상 선택해 주세요.')
+                return;
             }
-            const xhr = new XMLHttpRequest();
-            const formData = new FormData();
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState !== XMLHttpRequest.DONE) {
-                    return;
-                }
-                if (xhr.status < 200 || xhr.status >= 300) {
-                    Dialog.defaultOK('오류', '요청을 전송하는 도중 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.')
-                    return;
-                }
-            };
-            xhr.open('DELETE', 'admin/music/delete');
-            xhr.send(formData);
+            if ($trs.some(($tr) => $tr.dataset['deleted'] === 'true')) {
+                Dialog.defaultOK('삭제 승인', '이미 삭제된 항목이 선택되어 있습니다.<br><br>다시 한 번 확인해 주세요.')
+                return;
+            }
+            Dialog.defaultYesNo('거절 승인', `정말로 선택한 ${$trs.length.toLocaleString()}개의 음원을 삭제할까요?`, () => {
+                const indexes = $trs.map(($tr) => parseInt($tr.dataset['index']));
+                sendDeleteRequest(indexes);
+            });
         }
 
         $allowButton.onclick = () => {
@@ -772,10 +836,13 @@ $navItems.forEach(($navItem) => {
                     $tr.querySelector(':scope > td > button[name="deny"]')?.addEventListener('click', () => {
                         Dialog.defaultYesNo('선택 승인', `정말로 선택한 음원을 거절할까요?`, () => sendPatchStatusRequest([music['index']], false));
                     });
+                    $tr.querySelector(':scope > td > button[name="delete"]')?.addEventListener('click', () => {
+                        Dialog.defaultYesNo('선택 승인', `정말로 선택한 음원을 삭제할까요?`, () => sendDeleteRequest([music['index']]));
+                    });
                     $tbody.append($tr);
                 }
             }
-            xhr.open('GET', '/admin/musics');
+            xhr.open('GET', '/admin/music/');
             xhr.send();
             Loading.show(0);
         }

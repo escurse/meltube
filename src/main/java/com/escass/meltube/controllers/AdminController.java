@@ -3,7 +3,6 @@ package com.escass.meltube.controllers;
 import com.escass.meltube.entities.MusicEntity;
 import com.escass.meltube.results.Result;
 import com.escass.meltube.services.AdminService;
-import com.escass.meltube.services.MusicService;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
@@ -17,16 +16,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/admin")
 @RequiredArgsConstructor
 public class AdminController {
-    private final MusicService musicService;
     private final AdminService adminService;
 
-    @RequestMapping(value = "/musics", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/music/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public MusicEntity[] getMusics() {
-        return this.musicService.getAllMusics(false);
+    public MusicEntity[] getMusicIndex() {
+        return this.adminService.getMusics();
     }
 
     //region Music
+    @RequestMapping(value = "/music/", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String deleteMusicIndex(@RequestParam(value = "indexes", required = false) int[] indexes) {
+        JSONObject response = new JSONObject();
+        Result result = this.adminService.deleteMusics(indexes);
+        response.put(Result.NAME, result.nameToLower());
+        return response.toString();
+    }
+
     @RequestMapping(value = "/music/status", method = RequestMethod.PATCH, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String patchMusicStatus(@RequestParam(value = "status", required = false) Boolean status,

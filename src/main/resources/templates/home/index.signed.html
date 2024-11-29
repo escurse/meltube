@@ -12,6 +12,7 @@
     <script type="text/javascript" th:src="@{'/assets/scripts/common.js'}"></script>
     <script defer type="text/javascript" th:src="@{'/assets/scripts/index.signed.js'}"></script>
     <script src="https://kit.fontawesome.com/be247728af.js" crossorigin="anonymous"></script>
+
 </head>
 <body>
 <nav id="nav">
@@ -191,6 +192,22 @@
         <div class="button-container">
             <button class="--obj-button -color-light-gray" name="selectAll" type="button">전체 선택</button>
             <button class="--obj-button -color-light-gray" name="unselectAll" type="button">전체 선택 해제</button>
+            <form class="filter-form">
+                <label class="--obj-label">
+                    <select class="--obj-field -dark" name="status">
+                        <option value="all">전체</option>
+                        <option value="allowed">승인</option>
+                        <option value="denied">거절</option>
+                        <option value="pending">승인 대기 중</option>
+                        <option value="deleted">삭제</option>
+                    </select>
+                </label>
+                <label class="--obj-label">
+                    <input class="--obj-field -dark" name="keyword" placeholder="필터" type="text">
+                </label>
+                <button class="--obj-button -color-primary" type="submit">필터 적용</button>
+                <button class="--obj-button -color-dim-gray" name="release" type="button">필터 해제</button>
+            </form>
             <span class="-spring"></span>
             <button class="--obj-button -color-primary" name="allow" type="button">선택 승인</button>
             <button class="--obj-button -color-red" name="deny" type="button">선택 거절</button>

@@ -16,6 +16,28 @@ public class AdminService {
 
     //region Music
     @Transactional
+    public Result deleteMusics(int[] indexes) {
+        if (indexes == null || indexes.length == 0) {
+            return CommonResult.FAILURE;
+        }
+        for (int index : indexes) {
+            MusicEntity music = this.musicMapper.selectMusicByIndex(index, false);
+            if (music == null || music.isDeleted()) {
+                throw new TransactionalException();
+            }
+            music.setDeleted(true);
+            if (this.musicMapper.updateMusic(music, false) == 0) {
+                throw new TransactionalException();
+            }
+        }
+        return CommonResult.SUCCESS;
+    }
+
+    public MusicEntity[] getMusics() {
+        return this.musicMapper.selectMusics(false);
+    }
+
+    @Transactional
     public Result ModifyMusicStatuses(Boolean status, int[] indexes) {
         if (status == null || indexes == null || indexes.length == 0) {
             return CommonResult.FAILURE;

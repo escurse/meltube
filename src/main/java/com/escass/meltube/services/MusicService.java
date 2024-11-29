@@ -192,10 +192,6 @@ public class MusicService {
         return CommonResult.SUCCESS;
     }
 
-    public MusicEntity[] getAllMusics(boolean includeCover) {
-        return this.musicMapper.selectMusics(includeCover);
-    }
-
     public MusicEntity[] searchMelon(String keyword) throws IOException, InterruptedException {
         if (keyword == null || keyword.isEmpty()) {
             return null;
