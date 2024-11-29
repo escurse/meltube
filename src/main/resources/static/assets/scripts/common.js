@@ -39,6 +39,24 @@ class Dialog {
     static $dialogArray = [];
 
     /**
+     * @param {string} title
+     * @param {string} content
+     * @param {function(HTMLElement)|undefined} onclick
+     */
+    static defaultOK(title, content, onclick = undefined) {
+        Dialog.show({
+            title: title,
+            content: content,
+            buttons: [{text: '확인', onclick: ($dialog) => {
+                Dialog.hide($dialog);
+                if (typeof onclick === 'function') {
+                    onclick($dialog);
+                }
+                }}]
+        })
+    }
+
+    /**
      * @param {HTMLElement} $dialog
      */
     static hide($dialog) {

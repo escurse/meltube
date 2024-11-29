@@ -96,7 +96,6 @@
         </if>
         FROM `meltube`.`musics`
         WHERE `index` = #{index}
-        AND `is_deleted` IS FALSE
         LIMIT 1
     </select>
     <select id="selectMusics" parameterType="com.escass.meltube.entities.MusicEntity">

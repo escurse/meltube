@@ -562,27 +562,129 @@ $navItems.forEach(($navItem) => {
     }
 }
 
-// {
-//     const $content = $mainContents.find((x) => x.getAttribute('rel') === 'admin.music');
-//     const xhr = new XMLHttpRequest();
-//     xhr.onreadystatechange = () => {
-//         if (xhr.readyState !== XMLHttpRequest.DONE) {
-//             return;
-//         }
-//         if (xhr.status < 200 || xhr.status >= 300) {
-//             Dialog.show({
-//                 title: '오류',
-//                 content: '요청을 전송하는 도중 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.',
-//                 buttons: [{
-//                     text: '확인', onclick: ($dialog) => {
-//                         Dialog.hide($dialog);
-//                     }
-//                 }]
-//             })
-//             return;
-//         }
-//         const response = xhr.responseText;
-//     };
-//     xhr.open('GET', '/admin/musics');
-//     xhr.send();
-// }
+{
+    const $content = $mainContents.find((x) => x.getAttribute('rel') === 'admin.music');
+    if ($content) {  // $content != null  ===  ($content !== null && $content !== undefined)
+        const $selectAllButton = $content.querySelector(':scope > .button-container > [name="selectAll"]');
+        const $unselectAllButton = $content.querySelector(':scope > .button-container > [name="unselectAll"]');
+        const $detailButton = $content.querySelector(':scope > .button-container > [name="detail"]');
+        const $allowButton = $content.querySelector(':scope > .button-container > [name="allow"]');
+        const $denyButton = $content.querySelector(':scope > .button-container > [name="deny"]');
+        const $deleteButton = $content.querySelector(':scope > .button-container > [name="delete"]');
+        const $refreshButton = $content.querySelector(':scope > .button-container > [name="refresh"]');
+        const $table = $content.querySelector(':scope > table');
+        const $tbody = $table.querySelector(':scope > tbody');
+        const getCheckedTrs = () => Array.from($tbody.querySelectorAll(':scope > tr')).filter(($tr) => $tr.querySelector(':scope > td > label > input[name="check"]').checked);
+
+        $selectAllButton.onclick = () => $tbody.querySelectorAll(':scope > tr > td > label > input[name="check"]').forEach((x) => x.checked = true);
+
+        $unselectAllButton.onclick = () => $tbody.querySelectorAll(':scope > tr > td > label > input[name="check"]').forEach((x) => x.checked = false);
+
+        $allowButton.onclick = () => {
+            const $trs = getCheckedTrs();
+            if ($trs.length === 0) {
+                Dialog.show({
+                    title: '선택 승인',
+                    content: '승인할 항목을 한 개 이상 선택해 주세요.',
+                    buttons: [{
+                        text: '확인', onclick: ($dialog) => {
+                            Dialog.hide($dialog);
+                        }
+                    }]
+                })
+                return;
+            }
+            if ($trs.some(($tr) => $tr.dataset['deleted'] === 'true' || $tr.dataset['status'] !== 'PENDING')) {
+                Dialog.show({
+                    title: '선택 승인',
+                    content: '이미 삭제되었거나 승인 대기 중이 아닌 항목이 선택되어 있습니다.<br><br>다시 한 번 확인해 주세요.',
+                    buttons: [{
+                        text: '확인', onclick: ($dialog) => {
+                            Dialog.hide($dialog);
+                        }
+                    }]
+                })
+            }
+            const xhr = new XMLHttpRequest();
+            const formData = new FormData();
+
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState !== XMLHttpRequest.DONE) {
+                    return;
+                }
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    alert('오류 발생');
+                    return;
+                }
+            };
+            xhr.open('PATCH', '/');
+            xhr.send(formData);
+        }
+
+        $refreshButton.onclick = () => {
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState !== XMLHttpRequest.DONE) {
+                    return;
+                }
+                Loading.hide();
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    Dialog.show({
+                        title: '오류',
+                        content: '요청을 전송하는 도중 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.',
+                        buttons: [{
+                            text: '확인', onclick: ($dialog) => {
+                                Dialog.hide($dialog);
+                            }
+                        }]
+                    })
+                    return;
+                }
+                const response = JSON.parse(xhr.responseText);
+                $tbody.innerHTML = " ";
+                for (const music of response) {
+                    const $tr = new DOMParser().parseFromString(`
+                         <table>
+                            <tbody>
+                                <tr data-index="${music['index']}" data-deleted="${music['deleted']}" data-status="${music['status']}">
+                                    <td>
+                                        <label class="--obj-check-label">
+                                            <input class="_input" name=check type="checkbox">
+                                            <span class="_box"></span>
+                                        </label>
+                                    </td>
+                                    <td class="-text-align-center">${music['index']}</td>
+                                    <td>${music['userEmail']}</td>
+                                    <td class="-no-padding"><img alt="" class="cover" src="/music/cover?index=${music['index']}"></td>
+                                    <td>${music['artist']}</td>
+                                    <td>${music['album']}</td>
+                                    <td class="-text-align-center">${music['releaseDate']}</td>
+                                    <td>${music['genre']}</td>
+                                    <td>${music['name']}</td>
+                                    <td>${music['youtubeId']}</td>
+                                    <td>${music['deleted'] === true ? '삭제' : {
+                        ALLOWED: '승인',
+                        DENIED: '거절',
+                        PENDING: '승인 대기중'
+                    }[music['status']]}</td>
+                                    <td>
+                                        <button class="--obj-button -color-light-gray -size-small" name="detail" type="button">자세히</button>
+                                        ${music['deleted'] === false && music['status'] === 'PENDING' ? `
+                                        <button class="--obj-button -color-primary -size-small" name="allow" type="button">승인</button>
+                                        <button class="--obj-button -color-red -size-small" name="deny" type="button">거절</button>` : ''}
+                                        ${music['deleted'] === false ? `
+                                        <button class="--obj-button -color-red -size-small" name="delete" type="button">삭제</button>` : ''}
+                                    </td>
+                                </tr>
+                            </tbody>
+                         </table>
+                    `, 'text/html').querySelector('tr')
+                    $tbody.append($tr);
+                }
+            }
+            xhr.open('GET', '/admin/musics');
+            xhr.send();
+            Loading.show(0);
+        }
+    }
+}

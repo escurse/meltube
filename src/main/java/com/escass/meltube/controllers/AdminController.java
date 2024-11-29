@@ -20,4 +20,6 @@ public class AdminController {
     public MusicEntity[] getMusics() {
         return this.musicService.getAllMusics(false);
     }
+
+
 }
