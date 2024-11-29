@@ -57,6 +57,37 @@ class Dialog {
     }
 
     /**
+     * @param {string} title
+     * @param {string} content
+     * @param {function(HTMLElement)|undefined} onYes
+     * @param {function(HTMLElement)|undefined} onNo
+     */
+    static defaultYesNo(title, content, onYes = undefined, onNo = undefined) {
+        Dialog.show({
+            title: title,
+            content: content,
+            buttons: [
+                {
+                    text: '선택', onclick: ($dialog) => {
+                        Dialog.hide($dialog);
+                        if (typeof onYes === 'function') {
+                            onYes($dialog);
+                        }
+                    }
+                },
+                {
+                    text: '취소', onclick: ($dialog) => {
+                        Dialog.hide($dialog);
+                        if (typeof onNo === 'function') {
+                            onNo($dialog);
+                        }
+                    }
+                }
+            ]
+        })
+    }
+
+    /**
      * @param {HTMLElement} $dialog
      */
     static hide($dialog) {

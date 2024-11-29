@@ -576,6 +576,38 @@ $navItems.forEach(($navItem) => {
         const $tbody = $table.querySelector(':scope > tbody');
         const getCheckedTrs = () => Array.from($tbody.querySelectorAll(':scope > tr')).filter(($tr) => $tr.querySelector(':scope > td > label > input[name="check"]').checked);
 
+        /**
+         * @param {Array<number>} indexes
+         * @param {boolean} status
+         */
+        const sendPatchStatusRequest = (indexes, status) => {
+            const xhr = new XMLHttpRequest();
+            const formData = new FormData();
+            formData.append('status', status.toString());
+            indexes.forEach((index) => formData.append('indexes', index.toString()));
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState !== XMLHttpRequest.DONE) {
+                    return;
+                }
+                Loading.hide();
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    Dialog.defaultOK('오류', '요청을 전송하는 도중 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.')
+                    return;
+                }
+                const response = JSON.parse(xhr.responseText);
+                const title = status === true ? '음원 선택 승인' : '음원 선택 거절';
+                const [content, onclick] = {
+                    failure: ['알 수 없는 이유로 음원 상태를 변경하지 못하였습니다. 잠시 후 다시 시도해 주세요.'],
+                    failure_unsigned: ['세션이 만료되었습니다. 로그인 후 다시 시도해 주세요.<br><br>확인 버튼을 클릭하면 로그인 페이지로 이동합니다.', () => location.reload()],
+                    success: ['음원 상태를 성공적으로 변경하였습니다.', () => $content.querySelector(':scope > .button-container > [name="refresh"]').click()]
+                }[response['result']] || ['서버가 알 수 없는 응답을 반환하였습니다. 잠시 후 다시 시도해 주세요.'];
+                Dialog.defaultOK(title, content, onclick)
+            };
+            xhr.open('PATCH', '/admin/music/status'); // patchStatus
+            xhr.send(formData);
+            Loading.show(0);
+        }
+
         $selectAllButton.onclick = () => $tbody.querySelectorAll(':scope > tr > td > label > input[name="check"]').forEach((x) => x.checked = true);
 
         $unselectAllButton.onclick = () => $tbody.querySelectorAll(':scope > tr > td > label > input[name="check"]').forEach((x) => x.checked = false);
@@ -605,20 +637,18 @@ $navItems.forEach(($navItem) => {
                     }]
                 })
             }
-            const xhr = new XMLHttpRequest();
-            const formData = new FormData();
-
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState !== XMLHttpRequest.DONE) {
-                    return;
-                }
-                if (xhr.status < 200 || xhr.status >= 300) {
-                    alert('오류 발생');
-                    return;
-                }
-            };
-            xhr.open('PATCH', '/');
-            xhr.send(formData);
+            Dialog.show({
+                title: '선택 승인',
+                content: `정말로 선택한 ${$trs.length.toLocaleString()}개의 음원을 승인할까요?`,
+                buttons: [{text: '취소', onclick: ($dialog) => Dialog.hide($dialog)},
+                    {
+                        text: '계속', onclick: ($dialog) => {
+                            Dialog.hide($dialog);
+                            const indexes = $trs.map(($tr) => parseInt($tr.dataset['index']));
+                            sendPatchStatusRequest(indexes, true);
+                        }
+                    }]
+            })
         }
 
         $refreshButton.onclick = () => {
@@ -629,15 +659,7 @@ $navItems.forEach(($navItem) => {
                 }
                 Loading.hide();
                 if (xhr.status < 200 || xhr.status >= 300) {
-                    Dialog.show({
-                        title: '오류',
-                        content: '요청을 전송하는 도중 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.',
-                        buttons: [{
-                            text: '확인', onclick: ($dialog) => {
-                                Dialog.hide($dialog);
-                            }
-                        }]
-                    })
+                    Dialog.defaultOK('오류', '요청을 전송하는 도중 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.');
                     return;
                 }
                 const response = JSON.parse(xhr.responseText);
