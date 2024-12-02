@@ -29,7 +29,19 @@
 </nav>
 <main id="main">
     <header class="header">
-
+        <form class="search-form">
+            <label class="label">
+                <input required autocomplete="off" class="input" maxlength="50" minlength="1" name="keyword" type="text">
+            </label>
+            <button class="submit-button" type="submit">
+                <i class="icon fa-solid fa-magnifying-glass"></i>
+            </button>
+        </form>
+        <div class="-spring"></div>
+        <span class="nickname" th:text="${session.user.getNickname()}"></span>
+        <nav class="link-container">
+            <a th:href="@{/logout}" class="link">로그아웃</a>
+        </nav>
     </header>
     <div class="content" rel="mymusic.register">
         <h3 class="subtitle">마이뮤직</h3>
@@ -206,7 +218,7 @@
                     <input class="--obj-field -dark" name="keyword" placeholder="필터" type="text">
                 </label>
                 <button class="--obj-button -color-primary" type="submit">필터 적용</button>
-                <button class="--obj-button -color-dim-gray" name="release" type="button">필터 해제</button>
+                <button class="--obj-button -color-light-gray" name="release" type="button">필터 해제</button>
             </form>
             <span class="-spring"></span>
             <button class="--obj-button -color-primary" name="allow" type="button">선택 승인</button>

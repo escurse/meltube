@@ -87,7 +87,7 @@ public class MusicService {
         if (id == null || id.isEmpty()) {
             return null;
         }
-        String url = String.format("https://www.melon.com/song/detail.htm?songId=%s", id);
+        String url = String.format("https://www.melon.com/song/lyrics.htm?songId=%s", id);
         Document doc = Jsoup.connect(url).get();
         Elements $name = doc.select(".song_name");
         if ($name.isEmpty()) {

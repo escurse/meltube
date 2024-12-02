@@ -1,6 +1,7 @@
 package com.escass.meltube.controllers;
 
 import com.escass.meltube.entities.UserEntity;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,4 +22,18 @@ public class HomeController {
         }
         return modelAndView;
     }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public ModelAndView getLogout(HttpSession session) {
+        session.setAttribute("user", null);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/");
+        return modelAndView;
+    }
+
+//    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+//    public String getLogout(HttpSession session) {
+//        session.setAttribute("user", null);
+//        return "redirect:/";
+//    }
 }
