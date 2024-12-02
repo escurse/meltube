@@ -18,7 +18,13 @@
 <nav id="nav">
     <img th:src="@{/assets/images/index.signed/_logo-img.png}" alt="" class="logo">
     <ul class="menu">
+        <li class="title">홈</li>
+        <li class="item" rel="home.search">검색</li>
+    </ul>
+    <ul class="menu">
         <li class="title">마이뮤직</li>
+        <li class="item" rel="mymusic.playlist">플레이리스트</li>
+        <li class="item" rel="mymusic.like">좋아요</li>
         <li class="item" rel="mymusic.register">음원 등록 신청</li>
         <li class="item" rel="mymusic.register_history">음원 등록 신청 내역</li>
     </ul>
@@ -43,6 +49,97 @@
             <a th:href="@{/logout}" class="link">로그아웃</a>
         </nav>
     </header>
+    <div class="content -visible" rel="home.search">
+        <h3 class="subtitle">홈</h3>
+        <h2 class="title">검색</h2>
+        <div class="init" style="display: none">
+            <i class="icon fa-solid fa-magnifying-glass"></i>
+            <span class="message">아티스트나 앨범, 곡으록 검색해 보세요.</span>
+            <span class="message">원하는 결과가 없을 경우 <a href="#" class="link">음원 등록 신청</a>을 통해 원하는 음원을 등록할 수 있습니다.</span>
+        </div>
+        <div class="button-container">
+            <button class="--obj-button -simple-candy" name="selectAll" type="button">
+                <i class="_icon fa-regular fa-square-check"></i>
+                <span class="_text">전체 선택</span>
+            </button>
+            <button class="--obj-button -simple-candy" name="unselectAll" type="button">
+                <i class="_icon fa-regular fa-square"></i>
+                <span class="_text">전체 선택 해제</span>
+            </button>
+            <button class="-spring"></button>
+            <button class="--obj-button -simple-candy" name="addToPlaylist" type="button">
+                <span class="_text">플레이리스트에 추가</span>
+            </button>
+            <button class="--obj-button -simple-candy" name="addToCurrentPlaylist" type="button">
+                <span class="_text">현재 재생목록에 추가</span>
+            </button>
+        </div>
+        <table class="result --obj-table">
+            <thead>
+            <tr>
+                <th></th>
+                <th>곡명</th>
+                <th>아티스트</th>
+                <th>앨범</th>
+                <th>좋아요</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="empty">
+                <td colspan="5">
+                    <span class="message">검색어 <span class="keyword">???</span>에 대한 검색 결과가 없어요.</span>
+                    <span class="message">보다 단순한 다른 단어를 검색해 보거나<a class="link" href="#">음원 등록 신청</a>을 통해 음원을 직접 등록해 보세요.</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="-no-padding">
+                    <label class="--obj-check-label -dark">
+                        <input name="check" type="checkbox" class="_input">
+                        <span class="_box"></span>
+                    </label>
+                </td>
+                <td>
+                    <span class="name-wrapper">
+                        <img class="cover" src="/music/cover?index=1" alt="">
+                        <span class="name">만찬가</span>
+                    </span>
+                </td>
+                <td>츠키(tuki)</td>
+                <td>晩餐歌</td>
+                <td>
+                    <span class="like-wrapper -liked">
+                        <i class="icon fa-solid fa-heart"></i>
+                        <span class="count">7,337</span>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="-no-padding">
+                    <label class="--obj-check-label -dark">
+                        <input name="check" type="checkbox" class="_input">
+                        <span class="_box"></span>
+                    </label>
+                </td>
+                <td>
+                    <span class="name-wrapper">
+                        <img class="cover" src="/music/cover?index=2" alt="">
+                        <span class="name">사랑의 유통기한</span>
+                    </span>
+                </td>
+                <td>츠키(tuki)</td>
+                <td>アイモライモ</td>
+                <td>
+                    <span class="like-wrapper">
+                        <i class="icon fa-regular fa-heart"></i>
+                        <span class="count">5,136</span>
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="content" rel="mymusic.playlist"></div>
+    <div class="content" rel="mymusic.like"></div>
     <div class="content" rel="mymusic.register">
         <h3 class="subtitle">마이뮤직</h3>
         <h2 class="title">음원 등록 신청</h2>

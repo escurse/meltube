@@ -203,6 +203,124 @@ body .-spring {
   flex-shrink: 1;
 }
 
+#main > .content[rel="home.search"] {
+  width: 100%;
+}
+#main > .content[rel="home.search"] > .init {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: center;
+}
+#main > .content[rel="home.search"] > .init .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main > .content[rel="home.search"] > .init > .icon {
+  color: #424242;
+  font-size: 3.75rem;
+  margin-bottom: 1rem;
+}
+#main > .content[rel="home.search"] > .init > .message {
+  color: #a0a0a0;
+  font-size: 1.125rem;
+}
+#main > .content[rel="home.search"] > .init > .message > .link {
+  color: #ffffff;
+}
+#main > .content[rel="home.search"] > .button-container {
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  gap: 0.375rem;
+  justify-content: flex-start;
+  margin-bottom: 0.5rem;
+}
+#main > .content[rel="home.search"] > .button-container .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main > .content[rel="home.search"] > .result {
+  width: 100%;
+}
+#main > .content[rel="home.search"] > .result > thead > tr > th:nth-of-type(2) {
+  width: 100%;
+}
+#main > .content[rel="home.search"] > .result > thead > tr > th {
+  border-bottom: 0.0625rem solid rgb(46.3857142857, 47.75, 49.1142857143);
+  color: #a0a0a0;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+#main > .content[rel="home.search"] > .result > tbody > tr.empty > td {
+  line-height: 200%;
+  padding: 2rem;
+  text-align: center;
+}
+#main > .content[rel="home.search"] > .result > tbody > tr.empty > td > .message {
+  color: #bdbdbd;
+  display: block;
+}
+#main > .content[rel="home.search"] > .result > tbody > tr.empty > td > .message > .keyword,
+#main > .content[rel="home.search"] > .result > tbody > tr.empty > td > .message > .link {
+  color: #ffffff;
+  font-weight: 500;
+}
+#main > .content[rel="home.search"] > .result > tbody > tr {
+  text-align: center;
+}
+#main > .content[rel="home.search"] > .result > tbody > tr > td {
+  border-bottom: 0.0625rem solid rgb(40.1928571429, 41.375, 42.5571428571);
+  font-size: 0.8rem;
+}
+#main > .content[rel="home.search"] > .result > tbody > tr > td > .--obj-check-label > ._input:checked + ._box {
+  background-color: #58595a;
+}
+#main > .content[rel="home.search"] > .result > tbody > tr > td > .--obj-check-label > ._box {
+  width: 0.75rem;
+  min-width: 0.75rem;
+  max-width: 0.75rem;
+  height: 0.75rem;
+  min-height: 0.75rem;
+  max-height: 0.75rem;
+  border: 0.125rem solid #58595a;
+  border-radius: 0.25rem;
+}
+#main > .content[rel="home.search"] > .result > tbody > tr > td > .name-wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: flex-start;
+  font-weight: 500;
+}
+#main > .content[rel="home.search"] > .result > tbody > tr > td > .name-wrapper .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main > .content[rel="home.search"] > .result > tbody > tr > td > .name-wrapper > .cover {
+  width: 2.25rem;
+  height: 2.25rem;
+  object-fit: cover;
+  object-position: center;
+}
+#main > .content[rel="home.search"] > .result > tbody > tr > td > .like-wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+#main > .content[rel="home.search"] > .result > tbody > tr > td > .like-wrapper .-spring {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+#main > .content[rel="home.search"] > .result > tbody > tr > td > .like-wrapper.-liked {
+  color: #01d345;
+}
+
 #main > .content[rel="mymusic.register"] > form > .melon > .row {
   align-items: stretch;
   display: flex;

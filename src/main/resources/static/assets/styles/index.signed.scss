@@ -175,6 +175,107 @@ body {
   }
 }
 
+#main > .content[rel="home.search"] {
+  width: 100%;
+
+  > .init {
+    @include flex(column, center, center, 0.5rem);
+
+    > .icon {
+      color: #424242;
+      font-size: 3.75rem;
+      margin-bottom: 1rem;
+    }
+
+    > .message {
+      color: #a0a0a0;
+      font-size: 1.125rem;
+
+      > .link {
+        color: #ffffff;
+      }
+    }
+  }
+
+  > .button-container {
+    @include flex(row, stretch, flex-start, 0.375rem);
+    margin-bottom: 0.5rem;
+  }
+
+  > .result {
+    width: 100%;
+
+    > thead > tr > th:nth-of-type(2) {
+      width: 100%;
+    }
+
+    > thead > tr > th {
+      border-bottom: 0.0625rem solid lighten(#222324, 5%);
+      color: #a0a0a0;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    > tbody > tr.empty > td {
+      line-height: 200%;
+      padding: 2rem;
+      text-align: center;
+
+      > .message {
+        color: #bdbdbd;
+        display: block;
+
+        > .keyword,
+        > .link {
+          color: #ffffff;
+          font-weight: 500;
+        }
+      }
+    }
+
+    > tbody > tr {
+      text-align: center;
+      > td {
+        border-bottom: 0.0625rem solid lighten(#222324, 2.5%);
+        font-size: 0.8rem;
+
+        > .--obj-check-label {
+          > ._input:checked + ._box {
+            background-color: #58595a;
+          }
+
+          > ._box {
+            @include minmaxSize(0.75rem);
+            border: 0.125rem solid #58595a;
+            border-radius: 0.25rem;
+          }
+        }
+
+        > .name-wrapper {
+          @include flex(row, center, flex-start, 1rem);
+          font-weight: 500;
+
+          > .cover {
+            width: 2.25rem;
+            height: 2.25rem;
+            object-fit: cover;
+            object-position: center;
+          }
+        }
+
+        > .like-wrapper {
+          @include flex(row, center, flex-start, 0.5rem);
+          cursor: pointer;
+
+          &.-liked {
+            color: #01d345;
+          }
+        }
+      }
+    }
+  }
+}
+
 #main > .content[rel="mymusic.register"] {
   > form {
     > .melon {

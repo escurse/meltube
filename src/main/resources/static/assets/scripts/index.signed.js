@@ -23,6 +23,57 @@ $navItems.forEach(($navItem) => {
     };
 });
 
+//region 헤더 검색(home.search)
+{
+    const $header = $main.querySelector(':scope > .header');
+    const $searchForm = $header.querySelector(':scope > .search-form');
+    // 여기서 URL 객체를 사용하는 이유는 주소에 들어가는 keyword의 인코딩 문제 (URL 객체는 알아서 해주는데, xhr.open에서 문자열 합치기를 하면 안 됨.)
+    // GET 방식 + 정해진 틀이 없는 값이 입력될 수 있을 때에는 URL 객체를 활용.
+    $searchForm.onsubmit = (e) => {
+        e.preventDefault();
+        if ($searchForm['keyword'].value === '') {
+            return;
+        }
+        const xhr = new XMLHttpRequest();
+        const url = new URL(location.href);
+        url.pathname = '/music/search';
+        url.searchParams.set('keyword', $searchForm['keyword'].value);
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState !== XMLHttpRequest.DONE) {
+                return;
+            }
+            Loading.hide();
+            if (xhr.status < 200 || xhr.status >= 300) {
+                Dialog.defaultOK('오류', '요청을 전송하는 도중 오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.');
+                return;
+            }
+            const response = JSON.parse(xhr.responseText);
+            const $content = $mainContents.find((x) => x.getAttribute('rel') === 'home.search');
+            const $init = $content.querySelector(':scope > .init');
+            const $result = $content.querySelector(':scope > .result');
+            const $tbody = $result.querySelector(':scope > tbody');
+            $tbody.querySelectorAll(':scope > tr').forEach(($tr) => {
+                if (!$tr.classList.contains('empty')) {
+                    $tr.remove()
+                }
+            });
+            if (response.length === 0) {
+                $tbody.querySelector(':scope > tr.empty').style.display = 'table-row';
+            } else {
+                $tbody.querySelector(':scope > tr.empty').style.display = 'none';
+                for (const music of response) {
+
+                }
+            }
+        };
+        xhr.open('GET', url.toString());
+        xhr.send();
+        Loading.show(0)
+    }
+}
+//endregion
+
+//region 음원 등록 신청(mymusic.register)
 {
     const $content = $mainContents.find((x) => x.getAttribute('rel') === 'mymusic.register');
     const $form = $content.querySelector(':scope > form');
@@ -332,7 +383,9 @@ $navItems.forEach(($navItem) => {
         Loading.show(0);
     }
 }
+// endregion
 
+//region 음원 등록 신청 내역(mymusic.register_history)
 {
     /**
      * @param {Array<number>} indexArray
@@ -561,7 +614,9 @@ $navItems.forEach(($navItem) => {
         Loading.show(0);
     }
 }
+//endregion
 
+//region 관리자 음원 관리(admin.music)
 {
     const $content = $mainContents.find((x) => x.getAttribute('rel') === 'admin.music');
     if ($content) {  // $content != null  ===  ($content !== null && $content !== undefined)
@@ -848,3 +903,4 @@ $navItems.forEach(($navItem) => {
         }
     }
 }
+//endregion

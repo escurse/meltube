@@ -277,8 +277,43 @@ ol, ul {
     padding: 0.425rem;
   }
 
+  &.-simple-candy {
+    $border_color: lighten(#222324, 5%);
+    $color: #bdbdbd;
+    border-color: $border_color;
+    border-style: solid;
+    border-width: 0.0625rem;
+    border-radius: 999rem;
+    color: $color;
+    padding: 0.425rem;
+
+    &:hover {
+      border-color: lighten($border_color, 2.5%);
+      color: lighten($color, 10%);
+    }
+
+    &:active {
+      border-color: lighten($border_color, 5%);
+      color: lighten($color, 20%);
+    }
+  }
+
   &.-color-primary {
     $background_color: #01cd3d;
+    background-color: $background_color;
+    color: #ffffff;
+
+    &:hover {
+      background-color: darken($background_color, 5%);
+    }
+
+    &:active {
+      background-color: darken($background_color, 10%);
+    }
+  }
+
+  &.-color-dim-gray {
+    $background_color: #757575;
     background-color: $background_color;
     color: #ffffff;
 
